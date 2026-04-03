@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Vaibhavi & Sankalp — 21 April 2026</title>
+<title>Vaibhavi & Sankalp â€” 21 April 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
@@ -11,7 +11,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
 <style>
-/* ===== CSS VARIABLES ===== */
 :root {
   --gold: #c9a84c;
   --gold-light: #e8cc7a;
@@ -22,9 +21,9 @@
   --ink-soft: #3d3028;
   --blush: #f7ede8;
   --shadow: rgba(100,60,20,0.18);
+  --rose: #c2856a;
 }
 
-/* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
@@ -35,31 +34,40 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== LOADING SCREEN ===== */
+/* ===== LOADER ===== */
 #loader {
   position: fixed; inset: 0;
-  background: var(--ink);
+  background: radial-gradient(ellipse at 50% 40%, #2a1a08 0%, #120d04 100%);
   display: flex; align-items: center; justify-content: center;
   z-index: 9999;
-  flex-direction: column; gap: 16px;
+  flex-direction: column; gap: 20px;
 }
 #loader .monogram {
   font-family: 'Great Vibes', cursive;
-  font-size: 4rem;
+  font-size: 4.5rem;
   color: var(--gold);
   opacity: 0;
   animation: fadeIn 1s ease 0.3s forwards;
 }
+#loader .loader-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.45em;
+  color: rgba(201,168,76,0.5);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.6s forwards;
+}
 #loader .loading-bar {
-  width: 120px; height: 1px;
-  background: rgba(201,168,76,0.2);
+  width: 140px; height: 1px;
+  background: rgba(201,168,76,0.15);
   position: relative; overflow: hidden;
 }
 #loader .loading-bar::after {
   content: '';
   position: absolute; left: -100%; top: 0;
   width: 100%; height: 100%;
-  background: var(--gold);
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
   animation: loadBar 1.8s ease 0.5s forwards;
 }
 @keyframes loadBar { to { left: 0; } }
@@ -68,121 +76,161 @@ body {
 /* ===== ENVELOPE SCREEN ===== */
 #envelope-screen {
   position: fixed; inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, #3d2a10 0%, #1a1008 60%, #0d0804 100%);
+  background: radial-gradient(ellipse at 50% 35%, #3d2a10 0%, #1a1008 55%, #0d0804 100%);
   display: flex; align-items: center; justify-content: center;
   z-index: 100;
   overflow: hidden;
 }
 
-/* Ambient particles */
+/* Floating petals/particles */
 .particle {
   position: absolute;
-  width: 2px; height: 2px;
-  background: var(--gold);
-  border-radius: 50%;
+  border-radius: 50% 0 50% 0;
   opacity: 0;
-  animation: float var(--dur) ease-in-out var(--delay) infinite;
+  animation: floatPetal var(--dur) ease-in-out var(--delay) infinite;
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-  20% { opacity: 0.6; }
-  80% { opacity: 0.3; }
-  100% { transform: translateY(-120px) translateX(var(--dx)); opacity: 0; }
+@keyframes floatPetal {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  15% { opacity: 0.5; }
+  85% { opacity: 0.2; }
+  100% { transform: translateY(-140px) translateX(var(--dx)) rotate(180deg); opacity: 0; }
 }
 
-/* Envelope container */
 .env-wrap {
   position: relative;
-  width: min(340px, 88vw);
+  width: min(360px, 90vw);
   cursor: pointer;
   user-select: none;
+  perspective: 1200px;
 }
 
-/* Envelope body */
 .envelope {
   position: relative;
   width: 100%;
-  padding-bottom: 68%;
-  background: linear-gradient(160deg, #fdf8f0 0%, #f5ead8 60%, #ede0c4 100%);
-  border-radius: 4px 4px 10px 10px;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 8px 20px rgba(201,168,76,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
-  overflow: hidden;
+  padding-bottom: 65%;
+  background: linear-gradient(155deg, #fef9f0 0%, #f7edda 55%, #ede0c2 100%);
+  border-radius: 3px 3px 12px 12px;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,0.7),
+    0 10px 30px rgba(201,168,76,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,0,0,0.05);
+  overflow: visible;
   transform-origin: center bottom;
   transition: transform 0.3s ease;
 }
-.env-wrap:hover .envelope { transform: translateY(-4px); }
+.env-wrap:hover .envelope { transform: translateY(-6px) scale(1.01); }
 
-/* Back flap lines */
+/* V-fold lines on envelope body */
 .envelope::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, transparent 49.5%, rgba(200,175,130,0.35) 49.5%, rgba(200,175,130,0.35) 50.5%, transparent 50.5%),
-              linear-gradient(225deg, transparent 49.5%, rgba(200,175,130,0.35) 49.5%, rgba(200,175,130,0.35) 50.5%, transparent 50.5%);
+  background:
+    linear-gradient(135deg, transparent 49.2%, rgba(190,165,120,0.3) 49.2%, rgba(190,165,120,0.3) 50.8%, transparent 50.8%),
+    linear-gradient(225deg, transparent 49.2%, rgba(190,165,120,0.3) 49.2%, rgba(190,165,120,0.3) 50.8%, transparent 50.8%);
+  border-radius: 3px 3px 12px 12px;
+}
+
+/* Bottom fold shadow */
+.envelope::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0,0,0,0.06), transparent);
+  border-radius: 0 0 12px 12px;
 }
 
 /* Top flap */
 .env-flap {
   position: absolute; top: 0; left: 0; right: 0;
-  height: 54%;
+  height: 56%;
   transform-origin: top center;
   z-index: 3;
   pointer-events: none;
   transform-style: preserve-3d;
-  transition: transform 0.9s cubic-bezier(0.4,0,0.2,1);
+  transition: transform 0.95s cubic-bezier(0.35,0,0.15,1);
 }
 .env-flap-inner {
   width: 100%;
   height: 100%;
-  background: linear-gradient(175deg, #fdf6e8 0%, #eedfc0 70%, #e5d4ad 100%);
+  background: linear-gradient(170deg, #fef7e8 0%, #f0ddb8 65%, #e5d0a0 100%);
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+  position: relative;
 }
+/* Gold edge on flap */
+.env-flap-inner::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(170deg, rgba(201,168,76,0.08) 0%, transparent 60%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Envelope inner glow when opened */
+.env-inner-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255,240,200,0.4), transparent 70%);
+  border-radius: 3px 3px 12px 12px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.env-wrap.opened .env-inner-glow { opacity: 1; }
 
 /* Wax seal */
 .wax-seal {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 90px; height: 90px;
+  width: 96px; height: 96px;
   z-index: 10;
   cursor: pointer;
-  transition: transform 0.3s ease, filter 0.3s ease;
-  animation: sealPulse 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+  animation: sealGlow 3s ease-in-out infinite;
 }
-.wax-seal:hover {
-  transform: translate(-50%, -50%) scale(1.08);
-  filter: brightness(1.1);
+.wax-seal:hover { transform: translate(-50%, -50%) scale(1.1); }
+@keyframes sealGlow {
+  0%,100% { filter: drop-shadow(0 0 6px rgba(201,168,76,0.3)) drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+  50% { filter: drop-shadow(0 0 22px rgba(201,168,76,0.65)) drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
 }
-@keyframes sealPulse {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
-  50% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.7)); }
-}
-.seal-svg { width: 100%; height: 100%; }
 
-/* Tap hint */
+.envelope-title {
+  margin-top: -8px;
+  text-align: center;
+}
+.envelope-invite-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.45em;
+  color: rgba(201,168,76,0.55);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 24px;
+}
 .tap-hint {
   margin-top: 28px;
   text-align: center;
-  color: rgba(201,168,76,0.7);
+  color: rgba(201,168,76,0.65);
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
+  font-size: 0.82rem;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  animation: hintPulse 2s ease-in-out infinite;
+  animation: hintPulse 2.2s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-@keyframes hintPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+.tap-hint::before, .tap-hint::after {
+  content: '';
+  display: inline-block;
+  width: 24px; height: 1px;
+  background: rgba(201,168,76,0.4);
+}
+@keyframes hintPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
 
-/* Opened flap state */
-.env-wrap.opened .env-flap {
-  transform: rotateX(-170deg);
-}
+.env-wrap.opened .env-flap { transform: rotateX(-175deg); }
 
 /* ===== MAIN SITE ===== */
-#main-site {
-  display: none;
-  background: var(--cream);
-  min-height: 100vh;
-}
+#main-site { display: none; background: var(--cream); min-height: 100vh; }
 
 /* ===== HERO ===== */
 #hero {
@@ -190,14 +238,12 @@ body {
   position: relative;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center;
-  padding: 60px 24px 40px;
+  padding: 80px 24px 50px;
   overflow: hidden;
 }
 
-/* Hero photo background */
 .hero-photo-bg {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   background-image: url('https://raw.githubusercontent.com/Sharmaji4103/Wedding-/main/Screenshot_2026-04-03-21-10-19-539_com.instagram.android-edit.jpg');
   background-size: cover;
   background-position: center top;
@@ -208,452 +254,468 @@ body {
   position: absolute; inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(10,6,2,0.45) 0%,
-    rgba(10,6,2,0.25) 40%,
-    rgba(10,6,2,0.55) 75%,
-    rgba(10,6,2,0.85) 100%
+    rgba(8,4,1,0.5) 0%,
+    rgba(8,4,1,0.2) 35%,
+    rgba(8,4,1,0.45) 65%,
+    rgba(8,4,1,0.92) 100%
   );
 }
 
-/* All hero content sits above overlay */
 #hero > *:not(.hero-photo-bg) { position: relative; z-index: 2; }
 
-/* Hero ornament lines */
-.hero-line {
-  position: absolute;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 1px; height: 80px;
-  background: linear-gradient(to bottom, transparent, var(--gold));
-  opacity: 0.6;
+.hero-top-line {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 70px;
+  background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.7));
   z-index: 2;
 }
 
-.hero-ornament {
-  width: 120px; height: 2px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  margin: 16px auto;
-  position: relative;
+/* Floral corner SVG decorations */
+.hero-corner {
+  position: absolute;
+  width: 90px; height: 90px;
+  z-index: 2;
+  opacity: 0.55;
 }
-.hero-ornament::before, .hero-ornament::after {
-  content: '?';
-  position: absolute; top: 50%; transform: translateY(-50%);
-  color: var(--gold); font-size: 8px; line-height: 1;
-}
-.hero-ornament::before { left: -12px; }
-.hero-ornament::after { right: -12px; }
+.hero-corner.tl { top: 12px; left: 12px; }
+.hero-corner.tr { top: 12px; right: 12px; transform: scaleX(-1); }
+.hero-corner.bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
+.hero-corner.br { bottom: 12px; right: 12px; transform: scale(-1); }
 
-.hero-monogram {
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(1.2rem, 4vw, 1.8rem);
+.divider-ornament {
+  display: flex; align-items: center; gap: 12px;
+  margin: 14px auto;
+  width: fit-content;
+}
+.divider-ornament .line {
+  width: 50px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold));
+}
+.divider-ornament .line.rev {
+  background: linear-gradient(to left, transparent, var(--gold));
+}
+.divider-ornament .diamond {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.hero-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
   color: var(--gold);
-  letter-spacing: 0.1em;
-  margin-bottom: 8px;
   opacity: 0;
+  margin-bottom: 4px;
 }
-
 .hero-names {
   font-family: 'Great Vibes', cursive;
-  font-size: clamp(3rem, 11vw, 6rem);
+  font-size: clamp(3.2rem, 13vw, 6.5rem);
   color: #fff;
-  line-height: 1.1;
+  line-height: 1.05;
   opacity: 0;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  text-shadow: 0 2px 30px rgba(0,0,0,0.5), 0 0 60px rgba(201,168,76,0.15);
+  letter-spacing: 0.02em;
 }
-
 .hero-date {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(0.7rem, 2.5vw, 0.85rem);
-  letter-spacing: 0.4em;
+  font-size: clamp(0.68rem, 2.5vw, 0.82rem);
+  letter-spacing: 0.45em;
   text-transform: uppercase;
   color: var(--gold-pale);
-  margin-top: 8px;
   opacity: 0;
 }
 
 /* Countdown */
 .countdown-wrap {
-  margin: 28px 0 20px;
-  display: flex; gap: 20px; justify-content: center;
+  margin: 30px 0 22px;
+  display: flex; gap: 0; justify-content: center; align-items: center;
   opacity: 0;
 }
-.cd-block {
-  text-align: center;
-  min-width: 56px;
-}
+.cd-block { text-align: center; min-width: 64px; padding: 0 8px; }
 .cd-num {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-size: clamp(2rem, 6vw, 2.6rem);
   color: #fff;
   line-height: 1;
   display: block;
+  text-shadow: 0 0 20px rgba(201,168,76,0.3);
 }
 .cd-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold);
   display: block;
-  margin-top: 4px;
+  margin-top: 5px;
+  opacity: 0.85;
 }
-.cd-sep {
-  font-size: 1.8rem;
-  color: var(--gold);
-  line-height: 1.4;
-  opacity: 0.6;
+.cd-divider {
+  color: rgba(201,168,76,0.5);
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 18px;
+  font-weight: 300;
 }
 
-/* CTA buttons */
 .cta-row {
   display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-  margin-top: 20px;
+  margin-top: 22px;
   opacity: 0;
 }
 .btn-gold {
-  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 60%, #a8852a 100%);
   color: var(--ink);
   border: none;
-  padding: 13px 28px;
+  padding: 14px 32px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.2em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   cursor: pointer;
   border-radius: 2px;
-  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
-  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+  transition: transform 0.25s, box-shadow 0.25s, filter 0.25s;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  position: relative; overflow: hidden;
 }
-.btn-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(201,168,76,0.5);
-  filter: brightness(1.05);
+.btn-gold::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
 }
+.btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(201,168,76,0.55); filter: brightness(1.05); }
 .btn-outline {
   background: transparent;
   color: #fff;
-  border: 1px solid var(--gold);
-  padding: 12px 24px;
+  border: 1px solid rgba(201,168,76,0.7);
+  padding: 13px 26px;
   font-family: 'Cormorant Garamond', serif;
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
   border-radius: 2px;
-  transition: all 0.2s;
+  transition: all 0.25s;
   text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
 }
-.btn-outline:hover {
-  background: var(--gold);
-  color: var(--ink);
-}
+.btn-outline:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); }
 
 /* ===== NAV DOTS ===== */
 .nav-dots {
   position: fixed; right: 16px; top: 50%;
   transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 12px;
   z-index: 50;
 }
 .nav-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid rgba(201,168,76,0.6);
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: all 0.3s;
+  position: relative;
 }
-.nav-dot.active { background: var(--gold); transform: scale(1.3); }
+.nav-dot::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.1);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.nav-dot.active { background: var(--gold); border-color: var(--gold); transform: scale(1.35); }
+.nav-dot.active::after { opacity: 1; }
+.nav-dot:hover { border-color: var(--gold); }
 
 /* ===== SECTION COMMON ===== */
-.section {
-  padding: 60px 20px;
-  max-width: 520px;
-  margin: 0 auto;
-}
-.section-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
+.section { padding: 64px 20px; max-width: 540px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 36px; }
 .section-eyebrow {
-  font-size: 0.7rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--gold);
-  display: block;
-  margin-bottom: 8px;
+  font-size: 0.68rem; letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--gold); display: block; margin-bottom: 10px;
 }
 .section-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(1.6rem, 5vw, 2.2rem);
-  color: var(--ink);
-  font-weight: 400;
+  font-size: clamp(1.7rem, 5.5vw, 2.3rem);
+  color: var(--ink); font-weight: 400; font-style: italic;
 }
 .ornament-line {
-  width: 60px; height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  margin: 12px auto 0;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 16px auto 0;
+}
+.ornament-line span {
+  height: 1px; width: 40px;
+  background: linear-gradient(to right, transparent, var(--gold));
+}
+.ornament-line span:last-child { background: linear-gradient(to left, transparent, var(--gold)); }
+.ornament-line i {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  display: block;
 }
 
 /* ===== CARDS ===== */
 .card-panel {
-  background: linear-gradient(160deg, #fff9f0, #fdf3e4);
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 4px;
+  background: linear-gradient(155deg, #fffdf7, #fdf5e4 50%, #f9efd3);
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: 6px;
   margin-bottom: 16px;
-  box-shadow: 0 4px 20px var(--shadow);
+  box-shadow: 0 4px 24px var(--shadow), 0 1px 0 rgba(255,255,255,0.9) inset;
   overflow: hidden;
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
 }
-.card-panel:hover { box-shadow: 0 8px 32px rgba(100,60,20,0.22); }
+.card-panel:hover { box-shadow: 0 10px 40px rgba(100,60,20,0.24); transform: translateY(-1px); }
 
 .card-header {
   padding: 18px 20px;
   display: flex; align-items: center; justify-content: space-between;
   cursor: pointer;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, background 0.3s;
 }
+.card-header:hover { background: rgba(201,168,76,0.04); }
 .card-panel.open .card-header { border-color: rgba(201,168,76,0.2); }
 
-.card-header-left {
-  display: flex; align-items: center; gap: 12px;
-}
+.card-header-left { display: flex; align-items: center; gap: 14px; }
 .card-icon {
-  width: 36px; height: 36px;
+  width: 38px; height: 38px;
   background: linear-gradient(135deg, var(--gold-light), var(--gold));
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; flex-shrink: 0;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(201,168,76,0.35);
 }
+.card-icon svg { width: 18px; height: 18px; fill: var(--ink); }
 .card-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.05rem;
-  color: var(--ink);
-  font-weight: 400;
+  font-size: 1.05rem; color: var(--ink); font-weight: 400;
 }
+
+/* Chevron arrow */
 .card-arrow {
-  width: 20px; height: 20px;
-  border-right: 1.5px solid var(--gold);
-  border-bottom: 1.5px solid var(--gold);
-  transform: rotate(45deg);
-  transition: transform 0.4s ease;
+  width: 10px; height: 10px;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
   flex-shrink: 0;
 }
-.card-panel.open .card-arrow { transform: rotate(-135deg); }
+.card-panel.open .card-arrow { transform: rotate(-135deg) translateY(-2px); }
 
-.card-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.6s cubic-bezier(0.4,0,0.2,1);
-}
-.card-panel.open .card-body { max-height: 800px; }
-.card-content { padding: 20px; }
+.card-body { max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.4,0,0.2,1); }
+.card-panel.open .card-body { max-height: 900px; }
+.card-content { padding: 20px 20px 24px; }
 
-/* Story content */
-.story-text {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--ink-soft);
-  font-style: italic;
-}
-.story-year {
-  display: inline-block;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
-  color: var(--gold);
-  margin-right: 8px;
-}
-
-/* Events */
+/* Event items */
 .event-item {
   display: flex; gap: 16px; align-items: flex-start;
   padding: 14px 0;
-  border-bottom: 1px solid rgba(201,168,76,0.15);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  transition: background 0.2s;
 }
-.event-item:last-child { border-bottom: none; }
+.event-item:last-child { border-bottom: none; padding-bottom: 0; }
+.event-timeline {
+  display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 4px;
+}
 .event-dot {
   width: 10px; height: 10px; border-radius: 50%;
-  background: var(--gold); flex-shrink: 0;
-  margin-top: 6px;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.18);
 }
+.event-connector {
+  width: 1px; flex: 1; min-height: 24px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  margin: 4px 0;
+  opacity: 0.3;
+}
+.event-item:last-child .event-connector { display: none; }
+.event-content { flex: 1; }
 .event-name {
   font-family: 'Playfair Display', serif;
-  font-size: 1.05rem; color: var(--ink);
-  display: block;
+  font-size: 1rem; color: var(--ink);
+  display: block; margin-bottom: 3px;
 }
-.event-detail {
-  font-size: 0.85rem; color: var(--ink-soft);
-  display: block; margin-top: 2px;
-  letter-spacing: 0.05em;
+.event-detail { font-size: 0.83rem; color: var(--ink-soft); display: block; line-height: 1.5; }
+.event-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: var(--ink);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 4px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
 }
 
-/* Gallery grid */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.gallery-item {
-  aspect-ratio: 1;
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-  cursor: pointer;
-}
-.gallery-item svg { width: 100%; height: 100%; }
-.gallery-item:hover svg { transform: scale(1.05); transition: transform 0.4s; }
-
-/* Map placeholder */
+/* Map */
 .map-box {
-  width: 100%; height: 200px;
-  background: linear-gradient(160deg, #e8e0d4, #d4ccc0);
+  width: 100%; height: 210px;
+  background: linear-gradient(160deg, #eee6d8, #ddd4c0);
   border-radius: 6px;
   position: relative;
   overflow: hidden;
   display: flex; align-items: center; justify-content: center;
 }
-.map-box svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.5; }
+.map-box svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .map-pin-label {
   position: relative; z-index: 2;
   text-align: center;
+  background: rgba(255,252,245,0.92);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 4px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
 }
-.map-venue { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--ink); display: block; }
-.map-address { font-size: 0.85rem; color: var(--ink-soft); display: block; margin-top: 4px; }
+.map-venue { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--ink); display: block; font-style: italic; }
+.map-address { font-size: 0.82rem; color: var(--ink-soft); display: block; margin-top: 3px; }
 .btn-directions {
-  display: inline-block; margin-top: 12px;
-  padding: 8px 20px;
-  background: var(--gold);
-  color: var(--ink);
-  border-radius: 2px;
-  font-size: 0.8rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-family: 'Cormorant Garamond', serif;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 12px; padding: 9px 20px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: var(--ink); border-radius: 2px;
+  font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+  font-family: 'Cormorant Garamond', serif; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: filter 0.2s, transform 0.2s;
 }
+.btn-directions:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
-/* RSVP Form */
+/* RSVP form */
 .rsvp-form { display: flex; flex-direction: column; gap: 14px; }
-.rsvp-field {
-  display: flex; flex-direction: column; gap: 5px;
-}
+.rsvp-field { display: flex; flex-direction: column; gap: 6px; }
 .rsvp-field label {
-  font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
+  font-size: 0.67rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
 }
 .rsvp-field input, .rsvp-field select, .rsvp-field textarea {
-  background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(201,168,76,0.3);
-  border-radius: 2px;
-  padding: 11px 14px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 3px;
+  padding: 12px 14px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1rem;
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s;
+  font-size: 1rem; color: var(--ink);
+  outline: none; transition: border-color 0.25s, box-shadow 0.25s;
 }
 .rsvp-field input:focus, .rsvp-field select:focus, .rsvp-field textarea:focus {
-  border-color: var(--gold);
+  border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
 }
 .rsvp-field textarea { resize: none; height: 80px; }
-.rsvp-success {
-  display: none;
-  text-align: center;
-  padding: 24px;
-}
-.rsvp-success-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
-.rsvp-success-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--ink); }
-.rsvp-success-sub { font-size: 0.9rem; color: var(--ink-soft); margin-top: 6px; }
+.rsvp-success { display: none; text-align: center; padding: 28px; }
+.rsvp-success-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+.rsvp-success-text { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--ink); font-style: italic; }
+.rsvp-success-sub { font-size: 0.92rem; color: var(--ink-soft); margin-top: 8px; line-height: 1.6; }
 
-/* WA button */
+/* WhatsApp button */
 .wa-btn {
-  display: flex; align-items: center; gap: 8px; justify-content: center;
-  background: #25d366;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 2px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: filter 0.2s;
-  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 9px; justify-content: center;
+  background: #25d366; color: white;
+  border: none; padding: 13px 24px; border-radius: 3px;
+  font-family: 'Cormorant Garamond', serif; font-size: 0.9rem;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; transition: filter 0.2s, transform 0.2s;
+  text-decoration: none; font-weight: 600;
 }
-.wa-btn:hover { filter: brightness(1.1); }
+.wa-btn:hover { filter: brightness(1.08); transform: translateY(-2px); }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(28px); }
+.reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.75s ease, transform 0.75s ease; }
 
 /* ===== FOOTER ===== */
 footer {
   background: var(--ink);
   color: var(--gold-pale);
   text-align: center;
-  padding: 40px 20px;
+  padding: 50px 20px 40px;
+  position: relative; overflow: hidden;
 }
-footer .footer-names {
+footer::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+.footer-monogram {
   font-family: 'Great Vibes', cursive;
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: var(--gold);
+  line-height: 1;
 }
-footer p {
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-top: 8px;
-  opacity: 0.5;
+footer .footer-tagline {
+  font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase;
+  opacity: 0.45; margin-top: 10px;
+}
+footer .footer-date {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem; letter-spacing: 0.2em;
+  color: rgba(245,232,196,0.6); margin-top: 6px; font-style: italic;
+}
+.footer-love {
+  margin-top: 24px; font-size: 0.65rem; letter-spacing: 0.2em;
+  opacity: 0.3; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.footer-love::before, .footer-love::after {
+  content: ''; display: inline-block; width: 20px; height: 1px;
+  background: rgba(201,168,76,0.4);
 }
 
-/* ===== MUSIC TOGGLE ===== */
+/* ===== FIXED BUTTONS ===== */
 .music-toggle {
-  position: fixed;
-  bottom: 24px; left: 20px;
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: rgba(26,16,8,0.85);
-  border: 1.5px solid var(--gold);
+  position: fixed; bottom: 24px; left: 20px;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(20,12,5,0.88);
+  border: 1.5px solid rgba(201,168,76,0.6);
   color: var(--gold);
   cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem;
-  z-index: 80;
-  backdrop-filter: blur(8px);
-  transition: transform 0.2s, background 0.2s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  display: none;
+  display: none; align-items: center; justify-content: center;
+  z-index: 80; backdrop-filter: blur(8px);
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
-.music-toggle:hover { transform: scale(1.1); background: rgba(201,168,76,0.15); }
-.music-toggle.playing { animation: musicPulse 1.5s ease-in-out infinite; }
-@keyframes musicPulse { 0%,100% { box-shadow: 0 4px 16px rgba(0,0,0,0.4); } 50% { box-shadow: 0 4px 24px rgba(201,168,76,0.5); } }
+.music-toggle:hover { transform: scale(1.1); background: rgba(201,168,76,0.15); border-color: var(--gold); }
+.music-toggle.playing { animation: musicPulse 1.8s ease-in-out infinite; }
+@keyframes musicPulse {
+  0%,100% { box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+  50% { box-shadow: 0 4px 28px rgba(201,168,76,0.5); }
+}
 
-/* ===== SHARE BTN ===== */
 .share-btn {
-  position: fixed;
-  bottom: 24px; right: 20px;
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: rgba(26,16,8,0.85);
-  border: 1.5px solid var(--gold);
+  position: fixed; bottom: 24px; right: 20px;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(20,12,5,0.88);
+  border: 1.5px solid rgba(201,168,76,0.6);
   color: var(--gold);
   cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-  z-index: 80;
-  backdrop-filter: blur(8px);
-  transition: transform 0.2s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  display: none;
+  display: none; align-items: center; justify-content: center;
+  z-index: 80; backdrop-filter: blur(8px);
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
-.share-btn:hover { transform: scale(1.1); }
+.share-btn:hover { transform: scale(1.1); background: rgba(201,168,76,0.15); }
 
-/* ===== SCROLL REVEAL ===== */
-.reveal { opacity: 0; transform: translateY(30px); }
-.reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.7s ease, transform 0.7s ease; }
+/* ===== SECTION DIVIDERS ===== */
+.section-divider {
+  text-align: center;
+  padding: 10px 0 0;
+  color: rgba(201,168,76,0.3);
+  font-size: 1.4rem;
+}
 
-/* ===== RESPONSIVENESS ===== */
+/* Responsive */
 @media (max-width: 400px) {
-  .countdown-wrap { gap: 12px; }
-  .cd-block { min-width: 44px; }
+  .countdown-wrap { gap: 0; }
+  .cd-block { min-width: 50px; }
+  .cta-row { flex-direction: column; align-items: center; }
+  .btn-gold, .btn-outline { width: 100%; text-align: center; justify-content: center; }
 }
 </style>
 </head>
@@ -662,44 +724,64 @@ footer p {
 <!-- LOADER -->
 <div id="loader">
   <div class="monogram">V & S</div>
+  <div class="loader-sub">21-April-2026</div>
   <div class="loading-bar"></div>
 </div>
 
 <!-- ENVELOPE SCREEN -->
 <div id="envelope-screen" style="display:none">
   <div style="display:flex;flex-direction:column;align-items:center;">
-    <div style="font-family:'Great Vibes',cursive;font-size:1rem;color:rgba(201,168,76,0.5);letter-spacing:0.3em;margin-bottom:28px;text-transform:uppercase;">You are cordially invited</div>
+    <span class="envelope-invite-text">You are cordially invited</span>
 
     <div class="env-wrap" id="envWrap" onclick="openEnvelope()">
       <div class="envelope">
-        <!-- Top flap -->
         <div class="env-flap" id="envFlap">
           <div class="env-flap-inner"></div>
         </div>
+        <div class="env-inner-glow"></div>
 
-        <!-- Wax Seal -->
+        <!-- Refined wax seal SVG -->
         <div class="wax-seal" id="waxSeal">
-          <svg class="seal-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <radialGradient id="sealGrad" cx="40%" cy="35%">
-                <stop offset="0%" stop-color="#e8cc7a"/>
-                <stop offset="40%" stop-color="#c9a84c"/>
-                <stop offset="100%" stop-color="#8b6914"/>
+              <radialGradient id="sealG" cx="38%" cy="33%">
+                <stop offset="0%" stop-color="#f0d878"/>
+                <stop offset="35%" stop-color="#c9a84c"/>
+                <stop offset="80%" stop-color="#9a7220"/>
+                <stop offset="100%" stop-color="#7a5810"/>
               </radialGradient>
+              <radialGradient id="sealShine" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="rgba(255,240,160,0.45)"/>
+                <stop offset="100%" stop-color="rgba(255,240,160,0)"/>
+              </radialGradient>
+              <filter id="sealShadow">
+                <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.5)"/>
+              </filter>
             </defs>
-            <circle cx="50" cy="50" r="47" fill="url(#sealGrad)"/>
-            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,220,100,0.4)" stroke-width="1"/>
-            <circle cx="50" cy="50" r="38" fill="rgba(0,0,0,0.08)"/>
-            <text x="33" y="62" font-family="'Great Vibes',cursive" font-size="28" fill="rgba(255,255,255,0.9)" text-anchor="middle">V</text>
-            <text x="50" y="58" font-family="'Cormorant Garamond',serif" font-size="14" fill="rgba(255,255,255,0.6)" text-anchor="middle">&amp;</text>
-            <text x="67" y="62" font-family="'Great Vibes',cursive" font-size="28" fill="rgba(255,255,255,0.9)" text-anchor="middle">S</text>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,220,100,0.3)" stroke-width="0.5" stroke-dasharray="2,3"/>
+            <!-- Main seal circle -->
+            <circle cx="50" cy="50" r="46" fill="url(#sealG)" filter="url(#sealShadow)"/>
+            <!-- Shine overlay -->
+            <circle cx="50" cy="50" r="46" fill="url(#sealShine)"/>
+            <!-- Outer decorative ring -->
+            <circle cx="50" cy="50" r="43" fill="none" stroke="rgba(255,225,110,0.35)" stroke-width="0.8"/>
+            <!-- Inner ring -->
+            <circle cx="50" cy="50" r="38" fill="rgba(0,0,0,0.1)" stroke="rgba(255,225,110,0.25)" stroke-width="0.6"/>
+            <!-- Decorative dots on ring -->
+            <circle cx="50" cy="11" r="1.5" fill="rgba(255,225,100,0.5)"/>
+            <circle cx="50" cy="89" r="1.5" fill="rgba(255,225,100,0.5)"/>
+            <circle cx="11" cy="50" r="1.5" fill="rgba(255,225,100,0.5)"/>
+            <circle cx="89" cy="50" r="1.5" fill="rgba(255,225,100,0.5)"/>
+            <!-- Monogram -->
+            <text x="32" y="61" font-family="'Great Vibes',cursive" font-size="27" fill="rgba(255,252,220,0.92)" text-anchor="middle">V</text>
+            <text x="50" y="56" font-family="'Playfair Display',serif" font-size="11" fill="rgba(255,252,220,0.6)" text-anchor="middle" font-style="italic">&amp;</text>
+            <text x="68" y="61" font-family="'Great Vibes',cursive" font-size="27" fill="rgba(255,252,220,0.92)" text-anchor="middle">S</text>
+            <!-- Dashed outer border -->
+            <circle cx="50" cy="50" r="45.5" fill="none" stroke="rgba(255,220,90,0.25)" stroke-width="0.5" stroke-dasharray="2.5,3.5"/>
           </svg>
         </div>
       </div>
     </div>
-
-    <div class="tap-hint">Tap the seal to open</div>
+    <div class="tap-hint">Tap to open</div>
   </div>
 </div>
 
@@ -707,8 +789,26 @@ footer p {
 <audio id="bgMusic" loop>
   <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg"/>
 </audio>
-<button class="music-toggle" id="musicToggle" onclick="toggleMusic()" title="Toggle music">?</button>
-<button class="share-btn" id="shareBtn" onclick="shareInvite()" title="Share invite">?</button>
+
+<!-- Music button with SVG icon -->
+<button class="music-toggle" id="musicToggle" onclick="toggleMusic()" title="Toggle music">
+  <svg id="musicIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18V5l12-2v13"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+  </svg>
+</button>
+
+<!-- Share button with SVG icon -->
+<button class="share-btn" id="shareBtn" onclick="shareInvite()" title="Share invite">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </svg>
+</button>
 
 
 <!-- MAIN SITE -->
@@ -717,179 +817,209 @@ footer p {
   <!-- NAV DOTS -->
   <nav class="nav-dots" id="navDots">
     <div class="nav-dot active" onclick="scrollTo('#hero')" title="Home"></div>
-    <div class="nav-dot" onclick="scrollTo('#story')" title="Story"></div>
     <div class="nav-dot" onclick="scrollTo('#events')" title="Events"></div>
+    <div class="nav-dot" onclick="scrollTo('#location-section')" title="Venue"></div>
     <div class="nav-dot" onclick="scrollTo('#rsvp-section')" title="RSVP"></div>
   </nav>
 
   <!-- HERO -->
   <section id="hero">
-    <!-- Photo background -->
     <div class="hero-photo-bg"></div>
+    <div class="hero-top-line"></div>
 
-    <div class="hero-line"></div>
+    <!-- Corner florals -->
+    <svg class="hero-corner tl" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="rgba(201,168,76,0.8)" fill="none" stroke-linecap="round">
+        <path d="M5 5 Q5 45 45 85" stroke-width="0.8"/>
+        <path d="M5 5 Q45 5 85 45" stroke-width="0.8"/>
+        <path d="M15 5 C15 25 5 35 5 45" stroke-width="0.6"/>
+        <path d="M5 15 C25 15 35 5 45 5" stroke-width="0.6"/>
+        <circle cx="5" cy="5" r="2.5" fill="rgba(201,168,76,0.8)" stroke="none"/>
+        <circle cx="20" cy="12" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+        <circle cx="12" cy="20" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+      </g>
+    </svg>
+    <svg class="hero-corner tr" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="rgba(201,168,76,0.8)" fill="none" stroke-linecap="round">
+        <path d="M5 5 Q5 45 45 85" stroke-width="0.8"/>
+        <path d="M5 5 Q45 5 85 45" stroke-width="0.8"/>
+        <path d="M15 5 C15 25 5 35 5 45" stroke-width="0.6"/>
+        <path d="M5 15 C25 15 35 5 45 5" stroke-width="0.6"/>
+        <circle cx="5" cy="5" r="2.5" fill="rgba(201,168,76,0.8)" stroke="none"/>
+        <circle cx="20" cy="12" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+        <circle cx="12" cy="20" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+      </g>
+    </svg>
+    <svg class="hero-corner bl" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="rgba(201,168,76,0.8)" fill="none" stroke-linecap="round">
+        <path d="M5 5 Q5 45 45 85" stroke-width="0.8"/>
+        <path d="M5 5 Q45 5 85 45" stroke-width="0.8"/>
+        <path d="M15 5 C15 25 5 35 5 45" stroke-width="0.6"/>
+        <path d="M5 15 C25 15 35 5 45 5" stroke-width="0.6"/>
+        <circle cx="5" cy="5" r="2.5" fill="rgba(201,168,76,0.8)" stroke="none"/>
+        <circle cx="20" cy="12" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+        <circle cx="12" cy="20" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+      </g>
+    </svg>
+    <svg class="hero-corner br" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="rgba(201,168,76,0.8)" fill="none" stroke-linecap="round">
+        <path d="M5 5 Q5 45 45 85" stroke-width="0.8"/>
+        <path d="M5 5 Q45 5 85 45" stroke-width="0.8"/>
+        <path d="M15 5 C15 25 5 35 5 45" stroke-width="0.6"/>
+        <path d="M5 15 C25 15 35 5 45 5" stroke-width="0.6"/>
+        <circle cx="5" cy="5" r="2.5" fill="rgba(201,168,76,0.8)" stroke="none"/>
+        <circle cx="20" cy="12" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+        <circle cx="12" cy="20" r="1.5" fill="rgba(201,168,76,0.5)" stroke="none"/>
+      </g>
+    </svg>
 
-    <div class="hero-monogram" id="hMonogram">Vaibhavi & Sankalp</div>
-    <div class="hero-ornament"></div>
+    <div class="hero-eyebrow" id="hEyebrow">Together with their families</div>
+
+    <div class="divider-ornament" id="hDiv1" style="opacity:0">
+      <span class="line rev"></span>
+      <span class="diamond"></span>
+      <span class="line"></span>
+    </div>
+
     <div class="hero-names" id="hNames">Vaibhavi<br/>&amp; Sankalp</div>
-    <div class="hero-date" id="hDate">Tuesday · 21 April 2026</div>
 
-    <!-- Countdown -->
+    <div class="divider-ornament" id="hDiv2" style="opacity:0">
+      <span class="line rev"></span>
+      <span class="diamond"></span>
+      <span class="diamond" style="width:4px;height:4px;opacity:0.5"></span>
+      <span class="diamond"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="hero-date" id="hDate">Tuesday - 21 April 2026</div>
+
     <div class="countdown-wrap" id="cdWrap">
       <div class="cd-block"><span class="cd-num" id="cd-d">00</span><span class="cd-label">Days</span></div>
-      <span class="cd-sep">·</span>
+      <span class="cd-divider">:</span>
       <div class="cd-block"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Hours</span></div>
-      <span class="cd-sep">·</span>
+      <span class="cd-divider">:</span>
       <div class="cd-block"><span class="cd-num" id="cd-m">00</span><span class="cd-label">Mins</span></div>
-      <span class="cd-sep">·</span>
+      <span class="cd-divider">:</span>
       <div class="cd-block"><span class="cd-num" id="cd-s">00</span><span class="cd-label">Secs</span></div>
     </div>
 
     <div class="cta-row" id="ctaRow">
-      <button class="btn-gold" onclick="document.getElementById('rsvp-section').scrollIntoView({behavior:'smooth'})">RSVP Now</button>
-      <a href="https://wa.me/?text=You%20are%20cordially%20invited%20to%20Vaibhavi%20%26%20Sankalp's%20wedding!%20%F0%9F%92%8D" target="_blank" class="btn-outline">WhatsApp RSVP</a>
+      <button class="btn-gold" onclick="document.getElementById('rsvp-section').scrollIntoView({behavior:'smooth'})">
+        RSVP Now
+      </button>
+      <a href="https://wa.me/?text=You%20are%20cordially%20invited%20to%20Vaibhavi%20%26%20Sankalp's%20wedding!%20%F0%9F%92%8D" target="_blank" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        WhatsApp
+      </a>
     </div>
   </section>
-
-  <!-- STORY -->
-  <div id="story" class="section reveal">
-    <div class="section-header">
-      <span class="section-eyebrow">Our Journey</span>
-      <h2 class="section-title">Our Story</h2>
-      <div class="ornament-line"></div>
-    </div>
-
-    <div class="card-panel" id="card-story">
-      <div class="card-header" onclick="toggleCard('card-story')">
-        <div class="card-header-left">
-          <div class="card-icon">??</div>
-          <span class="card-title">How We Met</span>
-        </div>
-        <div class="card-arrow"></div>
-      </div>
-      <div class="card-body">
-        <div class="card-content">
-          <p class="story-text">
-            <span class="story-year">2021</span>A chance encounter that sparked something neither of us could explain. Two souls, one moment, a lifetime of possibility ahead.
-          </p>
-          <br/>
-          <p class="story-text">
-            <span class="story-year">2022</span>Late-night conversations, shared dreams, and the quiet certainty that this was something rare and beautiful.
-          </p>
-          <br/>
-          <p class="story-text">
-            <span class="story-year">2024</span>Sankalp asked the question Vaibhavi already knew the answer to — surrounded by family, love, and marigolds.
-          </p>
-          <br/>
-          <p class="story-text">
-            <span class="story-year">2026</span>Now, we invite you to witness our forever.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- EVENTS -->
   <div id="events" class="section reveal">
     <div class="section-header">
-      <span class="section-eyebrow">Celebrations</span>
+      <span class="section-eyebrow">The Celebrations</span>
       <h2 class="section-title">Wedding Events</h2>
-      <div class="ornament-line"></div>
+      <div class="ornament-line"><span class="rev"></span><i></i><span></span></div>
     </div>
 
     <div class="card-panel">
       <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
         <div class="card-header-left">
-          <div class="card-icon">??</div>
-          <span class="card-title">All Events</span>
+          <div class="card-icon">
+            <!-- Calendar icon SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1410" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <span class="card-title">Schedule of Events</span>
         </div>
         <div class="card-arrow"></div>
       </div>
       <div class="card-body">
         <div class="card-content">
+
           <div class="event-item">
-            <div class="event-dot"></div>
-            <div>
+            <div class="event-timeline"><div class="event-dot"></div><div class="event-connector"></div></div>
+            <div class="event-content">
+              <span class="event-name">Ganesh Sthapna</span>
+              <span class="event-detail">Monday, 19 April-10:00 AM</span>
+              <span class="event-detail">Shanti Prakash Hall</span>
+              <span class="event-badge">Day 1</span>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-timeline"><div class="event-dot"></div><div class="event-connector"></div></div>
+            <div class="event-content">
+              <span class="event-name">Ladies Sangeet</span>
+              <span class="event-detail">Monday, 19 April-6:00 PM</span>
+              <span class="event-detail">Shanti Prakash Hall</span>
+              <span class="event-badge">Day 1</span>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-timeline"><div class="event-dot"></div><div class="event-connector"></div></div>
+            <div class="event-content">
               <span class="event-name">Haldi Ceremony</span>
-              <span class="event-detail">Monday, 20 April · 10:00 AM · Garden Terrace</span>
+              <span class="event-detail">Tuesday, 20 April-10:00 AM</span>
+              <span class="event-badge">Day 2</span>
             </div>
           </div>
+
           <div class="event-item">
-            <div class="event-dot"></div>
-            <div>
-              <span class="event-name">Mehndi Evening</span>
-              <span class="event-detail">Monday, 20 April · 6:00 PM · Villa Courtyard</span>
-            </div>
-          </div>
-          <div class="event-item">
-            <div class="event-dot"></div>
-            <div>
+            <div class="event-timeline"><div class="event-dot"></div><div class="event-connector"></div></div>
+            <div class="event-content">
               <span class="event-name">Sangeet Night</span>
-              <span class="event-detail">Monday, 20 April · 8:00 PM · Grand Ballroom</span>
+              <span class="event-detail">Tuesday, 20 April-7:00 PM</span>
+              <span class="event-badge">Day 2</span>
             </div>
           </div>
-          <div class="event-item">
-            <div class="event-dot"></div>
-            <div>
-              <span class="event-name">Wedding Ceremony</span>
-              <span class="event-detail">Tuesday, 21 April · 11:00 AM · Mandap Garden</span>
-            </div>
-          </div>
-          <div class="event-item">
-            <div class="event-dot"></div>
-            <div>
-              <span class="event-name">Reception Dinner</span>
-              <span class="event-detail">Tuesday, 21 April · 7:00 PM · Banquet Hall</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- GALLERY -->
-  <div class="section reveal">
-    <div class="section-header">
-      <span class="section-eyebrow">Memories</span>
-      <h2 class="section-title">Our Gallery</h2>
-      <div class="ornament-line"></div>
-    </div>
-
-    <div class="card-panel">
-      <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
-        <div class="card-header-left">
-          <div class="card-icon">??</div>
-          <span class="card-title">Photo Gallery</span>
-        </div>
-        <div class="card-arrow"></div>
-      </div>
-      <div class="card-body">
-        <div class="card-content">
-          <div class="gallery-grid">
-            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#f0e4cc"/><circle cx="50" cy="40" r="20" fill="#d4a87a" opacity="0.6"/><rect x="25" y="62" width="50" height="40" rx="8" fill="#d4a87a" opacity="0.5"/><text x="50" y="92" text-anchor="middle" font-size="9" fill="#8b6030" font-family="serif">First Meet</text></svg></div>
-            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#e8d4e0"/><rect x="20" y="20" width="60" height="40" rx="4" fill="#c8a0b8" opacity="0.6"/><polygon points="50,10 70,35 30,35" fill="#d4b0c8" opacity="0.7"/><text x="50" y="92" text-anchor="middle" font-size="9" fill="#8b4060" font-family="serif">Together</text></svg></div>
-            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#d8e8d0"/><circle cx="50" cy="45" r="25" fill="#a0c890" opacity="0.5"/><rect x="30" y="68" width="40" height="15" rx="3" fill="#70a860" opacity="0.6"/><text x="50" y="94" text-anchor="middle" font-size="9" fill="#406030" font-family="serif">Adventures</text></svg></div>
-            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#f8e8d0"/><path d="M50 20 Q70 40 50 60 Q30 40 50 20Z" fill="#e0b870" opacity="0.6"/><text x="50" y="85" text-anchor="middle" font-size="9" fill="#8b6014" font-family="serif">Proposal</text></svg></div>
-            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#e0e8f0"/><rect x="15" y="30" width="70" height="45" rx="6" fill="#90a8c8" opacity="0.5"/><circle cx="50" cy="52" r="12" fill="#7090b8" opacity="0.6"/><text x="50" y="94" text-anchor="middle" font-size="9" fill="#304060" font-family="serif">Engagement</text></svg></div>
-            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#f8f0e8"/><path d="M20 70 Q50 20 80 70Z" fill="#e0c890" opacity="0.5"/><circle cx="50" cy="50" r="15" fill="#c8a84c" opacity="0.5"/><text x="50" y="94" text-anchor="middle" font-size="9" fill="#8b6a14" font-family="serif">Us, Always</text></svg></div>
+          <div class="event-item">
+            <div class="event-timeline"><div class="event-dot" style="background:linear-gradient(135deg,var(--gold-light),var(--gold));box-shadow:0 0 0 4px rgba(201,168,76,0.25)"></div><div class="event-connector"></div></div>
+            <div class="event-content">
+              <span class="event-name" style="font-size:1.1rem;font-weight:600;color:var(--ink)">Wedding Ceremony</span>
+              <span class="event-detail">Wednesday, 21 April-1:00 PM</span>
+              <span class="event-badge" style="background:linear-gradient(135deg,#e8cc7a,#c9a84c);font-size:0.65rem">Main Event</span>
+            </div>
           </div>
+
+          <div class="event-item">
+            <div class="event-timeline"><div class="event-dot"></div></div>
+            <div class="event-content">
+              <span class="event-name">Reception Ceremony</span>
+              <span class="event-detail">Wednesday, 21 April-8:00 PM</span>
+              <span class="event-badge">Day 3</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 
   <!-- LOCATION -->
-  <div class="section reveal">
+  <div id="location-section" class="section reveal">
     <div class="section-header">
       <span class="section-eyebrow">Find Us</span>
       <h2 class="section-title">Venue & Location</h2>
-      <div class="ornament-line"></div>
+      <div class="ornament-line"><span class="rev"></span><i></i><span></span></div>
     </div>
 
     <div class="card-panel">
       <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
         <div class="card-header-left">
-          <div class="card-icon">??</div>
+          <div class="card-icon">
+            <!-- Location pin SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1410" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
           <span class="card-title">Wedding Venue</span>
         </div>
         <div class="card-arrow"></div>
@@ -897,19 +1027,32 @@ footer p {
       <div class="card-body">
         <div class="card-content">
           <div class="map-box">
-            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-              <rect width="300" height="200" fill="#e8e0d0"/>
-              <path d="M0 100 Q75 80 150 100 Q225 120 300 100" fill="none" stroke="#c8b890" stroke-width="2"/>
-              <path d="M50 0 Q60 100 55 200" fill="none" stroke="#d4c8a8" stroke-width="1.5"/>
-              <path d="M120 0 Q130 100 125 200" fill="none" stroke="#d4c8a8" stroke-width="1.5"/>
-              <path d="M200 0 Q210 100 205 200" fill="none" stroke="#d4c8a8" stroke-width="1.5"/>
-              <circle cx="150" cy="95" r="12" fill="rgba(201,168,76,0.3)" stroke="#c9a84c" stroke-width="1.5"/>
-              <circle cx="150" cy="95" r="4" fill="#c9a84c"/>
+            <svg viewBox="0 0 360 210" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="360" height="210" fill="#e8e0d0"/>
+              <!-- Grid roads -->
+              <line x1="0" y1="70" x2="360" y2="70" stroke="#d4c8a8" stroke-width="6"/>
+              <line x1="0" y1="140" x2="360" y2="140" stroke="#d4c8a8" stroke-width="4"/>
+              <line x1="90" y1="0" x2="90" y2="210" stroke="#d4c8a8" stroke-width="5"/>
+              <line x1="180" y1="0" x2="180" y2="210" stroke="#d4c8a8" stroke-width="6"/>
+              <line x1="270" y1="0" x2="270" y2="210" stroke="#d4c8a8" stroke-width="4"/>
+              <!-- Blocks -->
+              <rect x="95" y="75" width="80" height="60" rx="2" fill="#ddd6c6"/>
+              <rect x="185" y="75" width="80" height="60" rx="2" fill="#ddd6c6"/>
+              <rect x="5" y="75" width="80" height="60" rx="2" fill="#ddd6c6"/>
+              <rect x="95" y="145" width="80" height="60" rx="2" fill="#ddd6c6"/>
+              <rect x="5" y="5" width="80" height="60" rx="2" fill="#ddd6c6"/>
+              <!-- Pin -->
+              <circle cx="180" cy="105" r="16" fill="rgba(201,168,76,0.25)" stroke="none"/>
+              <circle cx="180" cy="105" r="8" fill="rgba(201,168,76,0.5)" stroke="none"/>
+              <circle cx="180" cy="105" r="4" fill="#c9a84c"/>
             </svg>
             <div class="map-pin-label">
               <span class="map-venue">Wedding Venue</span>
               <span class="map-address">To be announced</span>
-              <a class="btn-directions" href="https://maps.google.com" target="_blank">Get Directions</a>
+              <a class="btn-directions" href="https://maps.google.com" target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                Get Directions
+              </a>
             </div>
           </div>
         </div>
@@ -920,16 +1063,22 @@ footer p {
   <!-- RSVP -->
   <div id="rsvp-section" class="section reveal">
     <div class="section-header">
-      <span class="section-eyebrow">Confirm Attendance</span>
+      <span class="section-eyebrow">Kindly Reply</span>
       <h2 class="section-title">RSVP</h2>
-      <div class="ornament-line"></div>
+      <div class="ornament-line"><span class="rev"></span><i></i><span></span></div>
     </div>
 
-    <div class="card-panel" id="rsvp-card">
-      <div class="card-header" onclick="toggleCard('rsvp-card')">
+    <div class="card-panel open">
+      <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
         <div class="card-header-left">
-          <div class="card-icon">??</div>
-          <span class="card-title">Send Your Response</span>
+          <div class="card-icon">
+            <!-- Envelope/RSVP icon SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1410" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <span class="card-title">Confirm Attendance</span>
         </div>
         <div class="card-arrow"></div>
       </div>
@@ -938,41 +1087,36 @@ footer p {
           <div id="rsvp-form-wrap">
             <div class="rsvp-form">
               <div class="rsvp-field">
-                <label>Your Name</label>
-                <input type="text" id="rsvp-name" placeholder="Full name"/>
+                <label>Your Full Name</label>
+                <input type="text" id="rsvp-name" placeholder="e.g. Priya Sharma"/>
               </div>
               <div class="rsvp-field">
-                <label>Attending?</label>
+                <label>Will you attend?</label>
                 <select id="rsvp-attend">
-                  <option value="">— Please select —</option>
-                  <option value="yes">Joyfully Accepts</option>
-                  <option value="no">Regretfully Declines</option>
+                  <option value="">â€” Select â€”</option>
+                  <option value="yes">Joyfully accepts</option>
+                  <option value="no">Regretfully declines</option>
                 </select>
               </div>
               <div class="rsvp-field">
                 <label>Number of Guests</label>
-                <select id="rsvp-guests">
-                  <option value="1">Just Me (1)</option>
-                  <option value="2">2 Guests</option>
-                  <option value="3">3 Guests</option>
-                  <option value="4">4 Guests</option>
-                </select>
+                <input type="number" id="rsvp-guests" placeholder="1" min="1" max="10"/>
               </div>
               <div class="rsvp-field">
-                <label>Message to the Couple</label>
-                <textarea id="rsvp-msg" placeholder="Write your wishes..."></textarea>
+                <label>Message for the couple (optional)</label>
+                <textarea id="rsvp-msg" placeholder="Wishes, blessings, or a kind note..."></textarea>
               </div>
-              <button class="btn-gold" style="width:100%;justify-content:center;" onclick="submitRSVP()">Send RSVP</button>
-              <a href="https://wa.me/919999999999?text=Hi!%20I%20am%20RSVPing%20for%20Vaibhavi%20%26%20Sankalp's%20wedding.%20I%20will%20be%20attending!" target="_blank" class="wa-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                WhatsApp RSVP
+              <button class="btn-gold" style="width:100%;margin-top:4px" onclick="submitRSVP()">Confirm RSVP</button>
+              <a href="https://wa.me/+919999999999?text=RSVP%20for%20Vaibhavi%20%26%20Sankalp's%20Wedding%20-%20I%20will%20attend!" target="_blank" class="wa-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                RSVP via WhatsApp
               </a>
             </div>
           </div>
           <div class="rsvp-success" id="rsvp-success">
             <span class="rsvp-success-icon">??</span>
-            <div class="rsvp-success-text">Thank You!</div>
-            <div class="rsvp-success-sub">Your response has been received. We can't wait to celebrate with you.</div>
+            <p class="rsvp-success-text">Thank you so much!</p>
+            <p class="rsvp-success-sub">Your RSVP has been noted.<br/>We look forward to celebrating with you.</p>
           </div>
         </div>
       </div>
@@ -981,10 +1125,10 @@ footer p {
 
   <!-- FOOTER -->
   <footer>
-    <div class="hero-ornament" style="margin-bottom:16px;"></div>
-    <div class="footer-names">Vaibhavi & Sankalp</div>
-    <p>21 · April · 2026</p>
-    <p style="margin-top:20px;font-size:0.65rem;">Made with ? for our special day</p>
+    <div class="footer-monogram">Vaibhavi &amp; Sankalp</div>
+    <p class="footer-date">Wednesday-21 April-2026</p>
+    <p class="footer-tagline">Together at last</p>
+    <p class="footer-love">Made with love for our special day</p>
   </footer>
 
 </div><!-- #main-site -->
@@ -996,16 +1140,15 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     const loader = document.getElementById('loader');
     gsap.to(loader, {
-      opacity: 0, duration: 0.8, ease: 'power2.out',
+      opacity: 0, duration: 0.9, ease: 'power2.out',
       onComplete: () => {
         loader.style.display = 'none';
         showEnvelope();
       }
     });
-  }, 2000);
+  }, 2200);
 });
 
-/* ===== SHOW ENVELOPE ===== */
 function showEnvelope() {
   const es = document.getElementById('envelope-screen');
   es.style.display = 'flex';
@@ -1013,25 +1156,26 @@ function showEnvelope() {
   createParticles();
 }
 
-/* ===== PARTICLES ===== */
 function createParticles() {
   const es = document.getElementById('envelope-screen');
-  for (let i = 0; i < 30; i++) {
+  const colors = ['rgba(201,168,76,0.6)', 'rgba(240,216,120,0.5)', 'rgba(255,200,150,0.4)'];
+  for (let i = 0; i < 28; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
+    const size = 3 + Math.random() * 5;
     p.style.cssText = `
-      left: ${Math.random()*100}%;
-      top: ${60 + Math.random()*40}%;
-      --dur: ${3 + Math.random()*5}s;
-      --delay: ${Math.random()*6}s;
-      --dx: ${(Math.random()-0.5)*60}px;
-      opacity: 0;
+      left:${Math.random()*100}%;
+      top:${55+Math.random()*45}%;
+      width:${size}px; height:${size * 0.6}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      --dur:${4+Math.random()*5}s;
+      --delay:${Math.random()*7}s;
+      --dx:${(Math.random()-0.5)*80}px;
     `;
     es.appendChild(p);
   }
 }
 
-/* ===== OPEN ENVELOPE ===== */
 let envelopeOpened = false;
 function openEnvelope() {
   if (envelopeOpened) return;
@@ -1041,151 +1185,136 @@ function openEnvelope() {
   const es = document.getElementById('envelope-screen');
 
   gsap.to(seal, {
-    scale: 1.15, duration: 0.15, yoyo: true, repeat: 1,
+    scale: 1.18, duration: 0.12, yoyo: true, repeat: 1,
     onComplete: () => {
-      gsap.to(seal, { opacity: 0, scale: 0.5, duration: 0.4, ease: 'back.in(2)' });
+      gsap.to(seal, { opacity: 0, scale: 0.4, duration: 0.5, ease: 'back.in(2.5)' });
     }
   });
 
-  setTimeout(() => { wrap.classList.add('opened'); }, 300);
+  setTimeout(() => wrap.classList.add('opened'), 280);
 
   setTimeout(() => {
     gsap.to(es, {
-      y: -60, opacity: 0, duration: 0.9, ease: 'power2.inOut',
+      y: -70, opacity: 0, duration: 1, ease: 'power2.inOut',
       onComplete: () => {
         es.style.display = 'none';
         revealMainSite();
       }
     });
-  }, 1300);
+  }, 1350);
 }
 
-/* ===== REVEAL MAIN SITE ===== */
 function revealMainSite() {
   const site = document.getElementById('main-site');
   site.style.display = 'block';
-  gsap.from(site, { opacity: 0, y: 30, duration: 1, ease: 'power2.out' });
+  gsap.from(site, { opacity: 0, y: 25, duration: 1.1, ease: 'power2.out' });
 
   document.getElementById('musicToggle').style.display = 'flex';
   document.getElementById('shareBtn').style.display = 'flex';
 
-  gsap.to('#hMonogram', { opacity: 1, y: 0, duration: 0.7, delay: 0.3, ease: 'power2.out' });
-  gsap.fromTo('#hNames', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, delay: 0.6, ease: 'power2.out' });
-  gsap.to('#hDate', { opacity: 1, duration: 0.7, delay: 1, ease: 'power2.out' });
-  gsap.to('#cdWrap', { opacity: 1, duration: 0.7, delay: 1.4, ease: 'power2.out' });
-  gsap.to('#ctaRow', { opacity: 1, duration: 0.7, delay: 1.6, ease: 'power2.out' });
+  gsap.to('#hEyebrow', { opacity: 1, duration: 0.6, delay: 0.3 });
+  gsap.to('#hDiv1', { opacity: 1, duration: 0.5, delay: 0.5 });
+  gsap.fromTo('#hNames', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, delay: 0.6, ease: 'power2.out' });
+  gsap.to('#hDiv2', { opacity: 1, duration: 0.5, delay: 1 });
+  gsap.to('#hDate', { opacity: 1, duration: 0.7, delay: 1.1 });
+  gsap.to('#cdWrap', { opacity: 1, duration: 0.7, delay: 1.4 });
+  gsap.to('#ctaRow', { opacity: 1, duration: 0.7, delay: 1.7 });
 
   startCountdown();
   initScrollReveal();
   initNavDots();
 }
 
-/* ===== COUNTDOWN ===== */
 function startCountdown() {
   const target = new Date('2026-04-21T11:00:00');
   function update() {
-    const now = new Date();
-    const diff = target - now;
+    const diff = target - new Date();
     if (diff <= 0) {
       ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
       return;
     }
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
-    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
-    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
-    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+    document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
   }
-  update();
-  setInterval(update, 1000);
+  update(); setInterval(update, 1000);
 }
 
-/* ===== CARD TOGGLE ===== */
 function toggleCard(card) {
-  if (typeof card === 'string') card = document.getElementById(card);
   card.classList.toggle('open');
 }
 
-/* ===== SCROLL REVEAL ===== */
 function initScrollReveal() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 }
 
-/* ===== NAV DOTS ===== */
 function initNavDots() {
-  const sections = ['#hero', '#story', '#events', '#rsvp-section'];
+  const sections = ['hero','events','location-section','rsvp-section'];
   const dots = document.querySelectorAll('.nav-dot');
-  const observer = new IntersectionObserver((entries) => {
+  const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        const idx = sections.indexOf('#' + e.target.id);
-        if (idx !== -1) dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+        const idx = sections.indexOf(e.target.id);
+        if (idx !== -1) dots.forEach((d,i) => d.classList.toggle('active', i===idx));
       }
     });
   }, { threshold: 0.4 });
-  sections.forEach(s => {
-    const el = document.querySelector(s);
-    if (el) observer.observe(el);
-  });
+  sections.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
 }
 
-function scrollTo(sel) {
-  document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' });
-}
+function scrollTo(sel) { document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' }); }
 
-/* ===== MUSIC ===== */
 let musicPlaying = false;
 function toggleMusic() {
   const audio = document.getElementById('bgMusic');
+  const icon = document.getElementById('musicIcon');
   const btn = document.getElementById('musicToggle');
   if (musicPlaying) {
-    audio.pause(); btn.textContent = '?'; btn.classList.remove('playing'); musicPlaying = false;
+    audio.pause();
+    icon.innerHTML = '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>';
+    btn.classList.remove('playing');
+    musicPlaying = false;
   } else {
-    audio.play().catch(() => {}); btn.textContent = '?'; btn.classList.add('playing'); musicPlaying = true;
+    audio.play().catch(() => {});
+    icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    btn.classList.add('playing');
+    musicPlaying = true;
   }
 }
 
-/* ===== RSVP SUBMIT ===== */
 function submitRSVP() {
   const name = document.getElementById('rsvp-name').value.trim();
   const attend = document.getElementById('rsvp-attend').value;
   if (!name || !attend) {
     const form = document.getElementById('rsvp-form-wrap');
-    gsap.fromTo(form, { x: -8 }, { x: 0, duration: 0.5, ease: 'elastic.out(1,0.3)', repeat: 2, yoyo: true });
+    gsap.fromTo(form, {x: -10}, {x: 0, duration: 0.4, ease: 'elastic.out(1,0.3)', repeat: 3, yoyo: true});
     return;
   }
   gsap.to('#rsvp-form-wrap', {
-    opacity: 0, y: -20, duration: 0.4,
+    opacity: 0, y: -15, duration: 0.4,
     onComplete: () => {
       document.getElementById('rsvp-form-wrap').style.display = 'none';
-      const success = document.getElementById('rsvp-success');
-      success.style.display = 'block';
-      gsap.from(success, { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' });
+      const s = document.getElementById('rsvp-success');
+      s.style.display = 'block';
+      gsap.from(s, { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' });
     }
   });
 }
 
-/* ===== SHARE ===== */
 function shareInvite() {
-  const data = { title: "Vaibhavi & Sankalp's Wedding", text: "You are cordially invited to celebrate our wedding! ??", url: window.location.href };
+  const data = { title: "Vaibhavi & Sankalp's Wedding", text: "You are cordially invited! ??", url: window.location.href };
   if (navigator.share) {
     navigator.share(data).catch(() => {});
   } else {
     navigator.clipboard?.writeText(window.location.href).then(() => {
       const btn = document.getElementById('shareBtn');
-      btn.textContent = '?';
-      setTimeout(() => btn.textContent = '?', 2000);
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(() => btn.innerHTML = orig, 2200);
     });
   }
 }
