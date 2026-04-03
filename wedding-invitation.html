@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jack & Natalia — 6 June 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8cc7a;
+  --gold-pale: #f5e8c4;
+  --cream: #faf6ef;
+  --cream-dark: #f0e8d8;
+  --ink: #1a1410;
+  --ink-soft: #3d3028;
+  --blush: #f7ede8;
+  --shadow: rgba(100,60,20,0.18);
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Cormorant Garamond', serif;
+  background: var(--ink);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== LOADING SCREEN ===== */
+#loader {
+  position: fixed; inset: 0;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  flex-direction: column; gap: 16px;
+}
+#loader .monogram {
+  font-family: 'Great Vibes', cursive;
+  font-size: 4rem;
+  color: var(--gold);
+  opacity: 0;
+  animation: fadeIn 1s ease 0.3s forwards;
+}
+#loader .loading-bar {
+  width: 120px; height: 1px;
+  background: rgba(201,168,76,0.2);
+  position: relative; overflow: hidden;
+}
+#loader .loading-bar::after {
+  content: '';
+  position: absolute; left: -100%; top: 0;
+  width: 100%; height: 100%;
+  background: var(--gold);
+  animation: loadBar 1.8s ease 0.5s forwards;
+}
+@keyframes loadBar { to { left: 0; } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ===== ENVELOPE SCREEN ===== */
+#envelope-screen {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, #3d2a10 0%, #1a1008 60%, #0d0804 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  overflow: hidden;
+}
+
+/* Ambient particles */
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float var(--dur) ease-in-out var(--delay) infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.3; }
+  100% { transform: translateY(-120px) translateX(var(--dx)); opacity: 0; }
+}
+
+/* Envelope container */
+.env-wrap {
+  position: relative;
+  width: min(340px, 88vw);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Envelope body */
+.envelope {
+  position: relative;
+  width: 100%;
+  padding-bottom: 68%;
+  background: linear-gradient(160deg, #fdf8f0 0%, #f5ead8 60%, #ede0c4 100%);
+  border-radius: 4px 4px 10px 10px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 8px 20px rgba(201,168,76,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+  overflow: hidden;
+  transform-origin: center bottom;
+  transition: transform 0.3s ease;
+}
+.env-wrap:hover .envelope { transform: translateY(-4px); }
+
+/* Back flap lines */
+.envelope::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 49.5%, rgba(200,175,130,0.35) 49.5%, rgba(200,175,130,0.35) 50.5%, transparent 50.5%),
+              linear-gradient(225deg, transparent 49.5%, rgba(200,175,130,0.35) 49.5%, rgba(200,175,130,0.35) 50.5%, transparent 50.5%);
+}
+
+/* Top flap */
+.env-flap {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 54%;
+  transform-origin: top center;
+  z-index: 3;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+.env-flap-inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(175deg, #fdf6e8 0%, #eedfc0 70%, #e5d4ad 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.env-flap-back {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(175deg, #e8d5b0 0%, #d4bc90 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  backface-visibility: hidden;
+  transform: rotateX(180deg);
+}
+
+/* Wax seal */
+.wax-seal {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px; height: 90px;
+  z-index: 10;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  animation: sealPulse 3s ease-in-out infinite;
+}
+.wax-seal:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  filter: brightness(1.1);
+}
+@keyframes sealPulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+  50% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.7)); }
+}
+
+.seal-svg { width: 100%; height: 100%; }
+
+/* Tap hint */
+.tap-hint {
+  margin-top: 28px;
+  text-align: center;
+  color: rgba(201,168,76,0.7);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+@keyframes hintPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* Opened flap state */
+.env-wrap.opened .env-flap {
+  transform: rotateX(-170deg);
+}
+
+/* ===== MAIN SITE ===== */
+#main-site {
+  display: none;
+  background: var(--cream);
+  min-height: 100vh;
+}
+
+/* ===== HERO ===== */
+#hero {
+  min-height: 100svh;
+  background: linear-gradient(180deg, #1a1008 0%, #2a1c0c 30%, var(--cream) 100%);
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 60px 24px 40px;
+  overflow: hidden;
+}
+
+/* Hero ornament lines */
+.hero-line {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  opacity: 0.6;
+}
+
+.hero-ornament {
+  width: 120px; height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 16px auto;
+  position: relative;
+}
+.hero-ornament::before, .hero-ornament::after {
+  content: '◆';
+  position: absolute; top: 50%; transform: translateY(-50%);
+  color: var(--gold); font-size: 8px; line-height: 1;
+}
+.hero-ornament::before { left: -12px; }
+.hero-ornament::after { right: -12px; }
+
+.hero-monogram {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  opacity: 0;
+}
+
+.hero-names {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(3rem, 11vw, 6rem);
+  color: var(--ink);
+  line-height: 1.1;
+  opacity: 0;
+}
+
+.hero-date {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  opacity: 0;
+}
+
+/* Venue illustration */
+.venue-art {
+  width: min(280px, 80vw);
+  margin: 24px auto 0;
+  opacity: 0;
+}
+.venue-art svg { width: 100%; height: auto; }
+
+/* Countdown */
+.countdown-wrap {
+  margin: 28px 0 20px;
+  display: flex; gap: 20px; justify-content: center;
+  opacity: 0;
+}
+.cd-block {
+  text-align: center;
+  min-width: 56px;
+}
+.cd-num {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  color: var(--ink);
+  line-height: 1;
+  display: block;
+}
+.cd-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-top: 4px;
+}
+.cd-sep {
+  font-size: 1.8rem;
+  color: var(--gold);
+  line-height: 1.4;
+  opacity: 0.6;
+}
+
+/* CTA buttons */
+.cta-row {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  margin-top: 20px;
+  opacity: 0;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: var(--ink);
+  border: none;
+  padding: 13px 28px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+}
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,168,76,0.5);
+  filter: brightness(1.05);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  padding: 12px 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* ===== NAV DOTS ===== */
+.nav-dots {
+  position: fixed; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 50;
+}
+.nav-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-dot.active { background: var(--gold); transform: scale(1.3); }
+
+/* ===== SECTION COMMON ===== */
+.section {
+  padding: 60px 20px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.section-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  color: var(--ink);
+  font-weight: 400;
+}
+.ornament-line {
+  width: 60px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 12px auto 0;
+}
+
+/* ===== CARDS (door-open panels) ===== */
+.card-panel {
+  background: linear-gradient(160deg, #fff9f0, #fdf3e4);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px var(--shadow);
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+.card-panel:hover { box-shadow: 0 8px 32px rgba(100,60,20,0.22); }
+
+.card-header {
+  padding: 18px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+.card-panel.open .card-header { border-color: rgba(201,168,76,0.2); }
+
+.card-header-left {
+  display: flex; align-items: center; gap: 12px;
+}
+.card-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--ink);
+  font-weight: 400;
+}
+.card-arrow {
+  width: 20px; height: 20px;
+  border-right: 1.5px solid var(--gold);
+  border-bottom: 1.5px solid var(--gold);
+  transform: rotate(45deg);
+  transition: transform 0.4s ease;
+  flex-shrink: 0;
+}
+.card-panel.open .card-arrow { transform: rotate(-135deg); }
+
+.card-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.card-panel.open .card-body { max-height: 800px; }
+.card-content { padding: 20px; }
+
+/* Story content */
+.story-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.story-year {
+  display: inline-block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-right: 8px;
+}
+
+/* Events */
+.event-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.event-item:last-child { border-bottom: none; }
+.event-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0;
+  margin-top: 6px;
+}
+.event-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; color: var(--ink);
+  display: block;
+}
+.event-detail {
+  font-size: 0.85rem; color: var(--ink-soft);
+  display: block; margin-top: 2px;
+  letter-spacing: 0.05em;
+}
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.gallery-item {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+.gallery-item svg { width: 100%; height: 100%; }
+.gallery-item:hover svg { transform: scale(1.05); transition: transform 0.4s; }
+
+/* Map placeholder */
+.map-box {
+  width: 100%; height: 200px;
+  background: linear-gradient(160deg, #e8e0d4, #d4ccc0);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.map-box svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.5; }
+.map-pin-label {
+  position: relative; z-index: 2;
+  text-align: center;
+}
+.map-venue { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--ink); display: block; }
+.map-address { font-size: 0.85rem; color: var(--ink-soft); display: block; margin-top: 4px; }
+.btn-directions {
+  display: inline-block; margin-top: 12px;
+  padding: 8px 20px;
+  background: var(--gold);
+  color: var(--ink);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: 'Cormorant Garamond', serif;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+/* RSVP Form */
+.rsvp-form { display: flex; flex-direction: column; gap: 14px; }
+.rsvp-field {
+  display: flex; flex-direction: column; gap: 5px;
+}
+.rsvp-field label {
+  font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
+}
+.rsvp-field input, .rsvp-field select, .rsvp-field textarea {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 2px;
+  padding: 11px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.rsvp-field input:focus, .rsvp-field select:focus, .rsvp-field textarea:focus {
+  border-color: var(--gold);
+}
+.rsvp-field textarea { resize: none; height: 80px; }
+.rsvp-success {
+  display: none;
+  text-align: center;
+  padding: 24px;
+}
+.rsvp-success-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+.rsvp-success-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--ink); }
+.rsvp-success-sub { font-size: 0.9rem; color: var(--ink-soft); margin-top: 6px; }
+
+/* WA button */
+.wa-btn {
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 2px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: filter 0.2s;
+  text-decoration: none;
+}
+.wa-btn:hover { filter: brightness(1.1); }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--ink);
+  color: var(--gold-pale);
+  text-align: center;
+  padding: 40px 20px;
+}
+footer .footer-names {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.5rem;
+  color: var(--gold);
+}
+footer p {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+/* ===== MUSIC TOGGLE ===== */
+.music-toggle {
+  position: fixed;
+  bottom: 24px; left: 20px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(26,16,8,0.85);
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  z-index: 80;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  display: none; /* shown after envelope */
+}
+.music-toggle:hover { transform: scale(1.1); background: rgba(201,168,76,0.15); }
+.music-toggle.playing { animation: musicPulse 1.5s ease-in-out infinite; }
+@keyframes musicPulse { 0%,100% { box-shadow: 0 4px 16px rgba(0,0,0,0.4); } 50% { box-shadow: 0 4px 24px rgba(201,168,76,0.5); } }
+
+/* ===== SHARE BTN ===== */
+.share-btn {
+  position: fixed;
+  bottom: 24px; right: 20px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(26,16,8,0.85);
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  z-index: 80;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  display: none;
+}
+.share-btn:hover { transform: scale(1.1); }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(30px); }
+.reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.7s ease, transform 0.7s ease; }
+
+/* ===== RESPONSIVENESS ===== */
+@media (max-width: 400px) {
+  .countdown-wrap { gap: 12px; }
+  .cd-block { min-width: 44px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="monogram">J & N</div>
+  <div class="loading-bar"></div>
+</div>
+
+<!-- ENVELOPE SCREEN -->
+<div id="envelope-screen" style="display:none">
+  <!-- Floating particles -->
+  <script>
+    // Will be injected after load
+  </script>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div style="font-family:'Great Vibes',cursive;font-size:1rem;color:rgba(201,168,76,0.5);letter-spacing:0.3em;margin-bottom:28px;text-transform:uppercase;">You are cordially invited</div>
+
+    <div class="env-wrap" id="envWrap" onclick="openEnvelope()">
+      <div class="envelope">
+        <!-- Top flap -->
+        <div class="env-flap" id="envFlap">
+          <div class="env-flap-inner"></div>
+        </div>
+
+        <!-- Wax Seal -->
+        <div class="wax-seal" id="waxSeal">
+          <svg class="seal-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="sealGrad" cx="40%" cy="35%">
+                <stop offset="0%" stop-color="#e8cc7a"/>
+                <stop offset="40%" stop-color="#c9a84c"/>
+                <stop offset="100%" stop-color="#8b6914"/>
+              </radialGradient>
+            </defs>
+            <!-- Outer ring -->
+            <circle cx="50" cy="50" r="47" fill="url(#sealGrad)"/>
+            <!-- Inner decorative ring -->
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,220,100,0.4)" stroke-width="1"/>
+            <!-- Border pattern dots -->
+            <circle cx="50" cy="50" r="38" fill="rgba(0,0,0,0.08)"/>
+            <!-- Monogram J -->
+            <text x="33" y="62" font-family="'Great Vibes',cursive" font-size="28" fill="rgba(255,255,255,0.9)" text-anchor="middle">J</text>
+            <!-- Ampersand -->
+            <text x="50" y="58" font-family="'Cormorant Garamond',serif" font-size="14" fill="rgba(255,255,255,0.6)" text-anchor="middle">&amp;</text>
+            <!-- Monogram N -->
+            <text x="67" y="62" font-family="'Great Vibes',cursive" font-size="28" fill="rgba(255,255,255,0.9)" text-anchor="middle">N</text>
+            <!-- Outer dotted circle -->
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,220,100,0.3)" stroke-width="0.5" stroke-dasharray="2,3"/>
+          </svg>
+        </div>
+      </div><!-- .envelope -->
+    </div><!-- .env-wrap -->
+
+    <div class="tap-hint">Tap the seal to open</div>
+  </div>
+</div><!-- #envelope-screen -->
+
+
+<!-- MUSIC -->
+<audio id="bgMusic" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg"/>
+</audio>
+<button class="music-toggle" id="musicToggle" onclick="toggleMusic()" title="Toggle music">♪</button>
+<button class="share-btn" id="shareBtn" onclick="shareInvite()" title="Share invite">↗</button>
+
+
+<!-- MAIN SITE -->
+<div id="main-site">
+
+  <!-- NAV DOTS -->
+  <nav class="nav-dots" id="navDots">
+    <div class="nav-dot active" onclick="scrollTo('#hero')" title="Home"></div>
+    <div class="nav-dot" onclick="scrollTo('#story')" title="Story"></div>
+    <div class="nav-dot" onclick="scrollTo('#events')" title="Events"></div>
+    <div class="nav-dot" onclick="scrollTo('#rsvp-section')" title="RSVP"></div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-line"></div>
+
+    <div class="hero-monogram" id="hMonogram">Jack & Natalia</div>
+    <div class="hero-ornament"></div>
+    <div class="hero-names" id="hNames">Jack & Natalia</div>
+    <div class="hero-date" id="hDate">Saturday · 6 June 2026 · Tuscany, Italy</div>
+
+    <!-- Illustrated venue -->
+    <div class="venue-art" id="venueArt">
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#d4e8f5"/>
+            <stop offset="100%" stop-color="#f0d8c8"/>
+          </linearGradient>
+          <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8d8c0"/>
+            <stop offset="100%" stop-color="#c8b498"/>
+          </linearGradient>
+        </defs>
+        <!-- Sky -->
+        <rect width="280" height="130" fill="url(#skyGrad)"/>
+        <!-- Hills -->
+        <ellipse cx="60" cy="130" rx="90" ry="40" fill="#b8d4a8" opacity="0.6"/>
+        <ellipse cx="220" cy="135" rx="80" ry="35" fill="#a8c898" opacity="0.5"/>
+        <!-- Main building -->
+        <rect x="80" y="60" width="120" height="80" fill="url(#wallGrad)"/>
+        <!-- Roof -->
+        <polygon points="75,60 205,60 200,42 85,42" fill="#c8a88c"/>
+        <polygon points="85,42 200,42 195,30 90,30" fill="#b89880"/>
+        <!-- Windows -->
+        <rect x="98" y="75" width="22" height="30" rx="11" fill="#7aa8d8" opacity="0.8"/>
+        <rect x="129" y="75" width="22" height="30" rx="11" fill="#7aa8d8" opacity="0.8"/>
+        <rect x="160" y="75" width="22" height="30" rx="11" fill="#7aa8d8" opacity="0.8"/>
+        <!-- Door -->
+        <rect x="124" y="105" width="32" height="35" rx="16 16 0 0" fill="#8b6030"/>
+        <!-- Columns -->
+        <rect x="89" y="60" width="8" height="80" fill="#d8c8a8" opacity="0.7"/>
+        <rect x="183" y="60" width="8" height="80" fill="#d8c8a8" opacity="0.7"/>
+        <!-- Cypress trees -->
+        <ellipse cx="50" cy="95" rx="9" ry="28" fill="#5a8040"/>
+        <ellipse cx="230" cy="95" rx="9" ry="28" fill="#4a7030"/>
+        <rect x="47" y="120" width="6" height="20" fill="#5a4020"/>
+        <rect x="227" y="120" width="6" height="20" fill="#4a3818"/>
+        <!-- Foreground path -->
+        <ellipse cx="140" cy="155" rx="60" ry="12" fill="#c8b898" opacity="0.4"/>
+        <!-- Watercolor wash overlay -->
+        <rect width="280" height="160" fill="rgba(248,240,224,0.15)"/>
+      </svg>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown-wrap" id="cdWrap">
+      <div class="cd-block"><span class="cd-num" id="cd-d">00</span><span class="cd-label">Days</span></div>
+      <span class="cd-sep">·</span>
+      <div class="cd-block"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Hours</span></div>
+      <span class="cd-sep">·</span>
+      <div class="cd-block"><span class="cd-num" id="cd-m">00</span><span class="cd-label">Mins</span></div>
+      <span class="cd-sep">·</span>
+      <div class="cd-block"><span class="cd-num" id="cd-s">00</span><span class="cd-label">Secs</span></div>
+    </div>
+
+    <div class="cta-row" id="ctaRow">
+      <button class="btn-gold" onclick="document.getElementById('rsvp-section').scrollIntoView({behavior:'smooth'})">RSVP Now</button>
+      <a href="https://wa.me/?text=You%20are%20cordially%20invited%20to%20Jack%20%26%20Natalia's%20wedding!%20%F0%9F%92%8D" target="_blank" class="btn-outline">WhatsApp RSVP</a>
+    </div>
+  </section>
+
+  <!-- SECTIONS WITH SLIDING CARDS -->
+  <div id="story" class="section reveal">
+    <div class="section-header">
+      <span class="section-eyebrow">Our Journey</span>
+      <h2 class="section-title">Our Story</h2>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="card-panel" id="card-story">
+      <div class="card-header" onclick="toggleCard('card-story')">
+        <div class="card-header-left">
+          <div class="card-icon">💕</div>
+          <span class="card-title">How We Met</span>
+        </div>
+        <div class="card-arrow"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-content">
+          <p class="story-text">
+            <span class="story-year">2021</span>A chance encounter at a rooftop gallery in Rome. Jack was studying architecture; Natalia had wandered in from the rain. She asked him what a painting meant. He didn't know. They talked for four hours.
+          </p>
+          <br/>
+          <p class="story-text">
+            <span class="story-year">2022</span>Long-distance calls, unexpected flights, and a sunflower left on a doorstep in Naples.
+          </p>
+          <br/>
+          <p class="story-text">
+            <span class="story-year">2024</span>Jack proposed on the Ponte Vecchio at golden hour, with a ring her grandmother once wore.
+          </p>
+          <br/>
+          <p class="story-text">
+            <span class="story-year">2026</span>Now, we invite you to witness our forever.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENTS -->
+  <div id="events" class="section reveal">
+    <div class="section-header">
+      <span class="section-eyebrow">Celebrations</span>
+      <h2 class="section-title">Wedding Events</h2>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="card-panel">
+      <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
+        <div class="card-header-left">
+          <div class="card-icon">🌸</div>
+          <span class="card-title">All Events</span>
+        </div>
+        <div class="card-arrow"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-content">
+          <div class="event-item">
+            <div class="event-dot"></div>
+            <div>
+              <span class="event-name">Haldi Ceremony</span>
+              <span class="event-detail">Thursday, 4 June · 10:00 AM · Garden Terrace</span>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-dot"></div>
+            <div>
+              <span class="event-name">Mehndi Evening</span>
+              <span class="event-detail">Thursday, 4 June · 6:00 PM · Villa Courtyard</span>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-dot"></div>
+            <div>
+              <span class="event-name">Sangeet Night</span>
+              <span class="event-detail">Friday, 5 June · 8:00 PM · Grand Ballroom</span>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-dot"></div>
+            <div>
+              <span class="event-name">Wedding Ceremony</span>
+              <span class="event-detail">Saturday, 6 June · 11:00 AM · Chapel Garden</span>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-dot"></div>
+            <div>
+              <span class="event-name">Reception Dinner</span>
+              <span class="event-detail">Saturday, 6 June · 7:00 PM · Vineyard Terrace</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="section reveal">
+    <div class="section-header">
+      <span class="section-eyebrow">Memories</span>
+      <h2 class="section-title">Our Gallery</h2>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="card-panel">
+      <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
+        <div class="card-header-left">
+          <div class="card-icon">📸</div>
+          <span class="card-title">Photo Gallery</span>
+        </div>
+        <div class="card-arrow"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-content">
+          <div class="gallery-grid">
+            <!-- 6 illustrated portrait tiles -->
+            <div class="gallery-item"><?xml version="1.0"?><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#f0e4cc"/><circle cx="50" cy="40" r="20" fill="#d4a87a" opacity="0.6"/><rect x="25" y="62" width="50" height="40" rx="8" fill="#d4a87a" opacity="0.5"/><text x="50" y="92" text-anchor="middle" font-size="9" fill="#8b6030" font-family="serif">Rome 2021</text></svg></div>
+            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#e8d4e0"/><rect x="20" y="20" width="60" height="40" rx="4" fill="#c8a0b8" opacity="0.6"/><polygon points="50,10 70,35 30,35" fill="#d4b0c8" opacity="0.7"/><text x="50" y="92" text-anchor="middle" font-size="9" fill="#8b4060" font-family="serif">Naples 2022</text></svg></div>
+            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#d8e8d0"/><circle cx="50" cy="45" r="25" fill="#a0c890" opacity="0.5"/><rect x="30" y="68" width="40" height="15" rx="3" fill="#70a860" opacity="0.6"/><text x="50" y="94" text-anchor="middle" font-size="9" fill="#406030" font-family="serif">Tuscany 2023</text></svg></div>
+            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#f8e8d0"/><path d="M50 20 Q70 40 50 60 Q30 40 50 20Z" fill="#e0b870" opacity="0.6"/><text x="50" y="85" text-anchor="middle" font-size="9" fill="#8b6014" font-family="serif">Proposal 2024</text></svg></div>
+            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#e0e8f0"/><rect x="15" y="30" width="70" height="45" rx="6" fill="#90a8c8" opacity="0.5"/><circle cx="50" cy="52" r="12" fill="#7090b8" opacity="0.6"/><text x="50" y="94" text-anchor="middle" font-size="9" fill="#304060" font-family="serif">Engagement 2024</text></svg></div>
+            <div class="gallery-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#f8f0e8"/><path d="M20 70 Q50 20 80 70Z" fill="#e0c890" opacity="0.5"/><circle cx="50" cy="50" r="15" fill="#c8a84c" opacity="0.5"/><text x="50" y="94" text-anchor="middle" font-size="9" fill="#8b6a14" font-family="serif">Us, Always</text></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCATION -->
+  <div class="section reveal">
+    <div class="section-header">
+      <span class="section-eyebrow">Find Us</span>
+      <h2 class="section-title">Venue & Location</h2>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="card-panel">
+      <div class="card-header" onclick="toggleCard(this.closest('.card-panel'))">
+        <div class="card-header-left">
+          <div class="card-icon">📍</div>
+          <span class="card-title">Villa Bella Vista, Tuscany</span>
+        </div>
+        <div class="card-arrow"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-content">
+          <div class="map-box">
+            <!-- Stylized map background -->
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="200" fill="#e8e0d0"/>
+              <path d="M0 100 Q75 80 150 100 Q225 120 300 100" fill="none" stroke="#c8b890" stroke-width="2"/>
+              <path d="M50 0 Q60 100 55 200" fill="none" stroke="#d4c8a8" stroke-width="1.5"/>
+              <path d="M120 0 Q130 100 125 200" fill="none" stroke="#d4c8a8" stroke-width="1.5"/>
+              <path d="M200 0 Q210 100 205 200" fill="none" stroke="#d4c8a8" stroke-width="1.5"/>
+              <circle cx="150" cy="95" r="12" fill="rgba(201,168,76,0.3)" stroke="#c9a84c" stroke-width="1.5"/>
+              <circle cx="150" cy="95" r="4" fill="#c9a84c"/>
+            </svg>
+            <div class="map-pin-label">
+              <span class="map-venue">Villa Bella Vista</span>
+              <span class="map-address">Via dei Colli 12, Siena, Tuscany</span>
+              <a class="btn-directions" href="https://maps.google.com?q=Siena+Tuscany" target="_blank">Get Directions</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RSVP -->
+  <div id="rsvp-section" class="section reveal">
+    <div class="section-header">
+      <span class="section-eyebrow">Confirm Attendance</span>
+      <h2 class="section-title">RSVP</h2>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="card-panel" id="rsvp-card">
+      <div class="card-header" onclick="toggleCard('rsvp-card')">
+        <div class="card-header-left">
+          <div class="card-icon">✉️</div>
+          <span class="card-title">Send Your Response</span>
+        </div>
+        <div class="card-arrow"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-content">
+          <div id="rsvp-form-wrap">
+            <div class="rsvp-form">
+              <div class="rsvp-field">
+                <label>Your Name</label>
+                <input type="text" id="rsvp-name" placeholder="Full name"/>
+              </div>
+              <div class="rsvp-field">
+                <label>Attending?</label>
+                <select id="rsvp-attend">
+                  <option value="">— Please select —</option>
+                  <option value="yes">Joyfully Accepts</option>
+                  <option value="no">Regretfully Declines</option>
+                </select>
+              </div>
+              <div class="rsvp-field">
+                <label>Number of Guests</label>
+                <select id="rsvp-guests">
+                  <option value="1">Just Me (1)</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                </select>
+              </div>
+              <div class="rsvp-field">
+                <label>Message to the Couple</label>
+                <textarea id="rsvp-msg" placeholder="Write your wishes..."></textarea>
+              </div>
+              <button class="btn-gold" style="width:100%;justify-content:center;" onclick="submitRSVP()">Send RSVP</button>
+              <a href="https://wa.me/919999999999?text=Hi!%20I%20am%20RSVPing%20for%20Jack%20%26%20Natalia's%20wedding.%20I%20will%20be%20attending!" target="_blank" class="wa-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp RSVP
+              </a>
+            </div>
+          </div>
+          <div class="rsvp-success" id="rsvp-success">
+            <span class="rsvp-success-icon">💌</span>
+            <div class="rsvp-success-text">Thank You!</div>
+            <div class="rsvp-success-sub">Your response has been received. We can't wait to celebrate with you.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="hero-ornament" style="margin-bottom:16px;"></div>
+    <div class="footer-names">Jack & Natalia</div>
+    <p>6 · June · 2026</p>
+    <p style="margin-top:20px;font-size:0.65rem;">Made with ♥ for our special day</p>
+  </footer>
+
+</div><!-- #main-site -->
+
+
+<script>
+/* ===== LOADER ===== */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    gsap.to(loader, {
+      opacity: 0, duration: 0.8, ease: 'power2.out',
+      onComplete: () => {
+        loader.style.display = 'none';
+        showEnvelope();
+      }
+    });
+  }, 2000);
+});
+
+/* ===== SHOW ENVELOPE ===== */
+function showEnvelope() {
+  const es = document.getElementById('envelope-screen');
+  es.style.display = 'flex';
+  gsap.from(es, { opacity: 0, duration: 1, ease: 'power2.out' });
+  createParticles();
+}
+
+/* ===== PARTICLES ===== */
+function createParticles() {
+  const es = document.getElementById('envelope-screen');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      top: ${60 + Math.random()*40}%;
+      --dur: ${3 + Math.random()*5}s;
+      --delay: ${Math.random()*6}s;
+      --dx: ${(Math.random()-0.5)*60}px;
+      opacity: 0;
+    `;
+    es.appendChild(p);
+  }
+}
+
+/* ===== OPEN ENVELOPE ===== */
+let envelopeOpened = false;
+function openEnvelope() {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+  const wrap = document.getElementById('envWrap');
+  const flap = document.getElementById('envFlap');
+  const seal = document.getElementById('waxSeal');
+  const es = document.getElementById('envelope-screen');
+
+  // Seal break animation
+  gsap.to(seal, {
+    scale: 1.15, duration: 0.15, yoyo: true, repeat: 1,
+    onComplete: () => {
+      gsap.to(seal, { opacity: 0, scale: 0.5, duration: 0.4, ease: 'back.in(2)' });
+    }
+  });
+
+  // Flap open
+  setTimeout(() => {
+    wrap.classList.add('opened');
+  }, 300);
+
+  // Slide envelope up & fade
+  setTimeout(() => {
+    gsap.to(es, {
+      y: -60, opacity: 0, duration: 0.9, ease: 'power2.inOut',
+      onComplete: () => {
+        es.style.display = 'none';
+        revealMainSite();
+      }
+    });
+  }, 1300);
+}
+
+/* ===== REVEAL MAIN SITE ===== */
+function revealMainSite() {
+  const site = document.getElementById('main-site');
+  site.style.display = 'block';
+  gsap.from(site, { opacity: 0, y: 30, duration: 1, ease: 'power2.out' });
+
+  // Show utility buttons
+  document.getElementById('musicToggle').style.display = 'flex';
+  document.getElementById('shareBtn').style.display = 'flex';
+
+  // Animate hero elements
+  gsap.to('#hMonogram', { opacity: 1, y: 0, duration: 0.7, delay: 0.3, ease: 'power2.out' });
+  gsap.fromTo('#hNames', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, delay: 0.6, ease: 'power2.out' });
+  gsap.to('#hDate', { opacity: 1, duration: 0.7, delay: 1, ease: 'power2.out' });
+  gsap.to('#venueArt', { opacity: 1, y: 0, duration: 0.8, delay: 1.1, ease: 'power2.out' });
+  gsap.fromTo('#venueArt', { y: 20 }, { y: 0, duration: 0.8, delay: 1.1, ease: 'power2.out' });
+  gsap.to('#cdWrap', { opacity: 1, duration: 0.7, delay: 1.4, ease: 'power2.out' });
+  gsap.to('#ctaRow', { opacity: 1, duration: 0.7, delay: 1.6, ease: 'power2.out' });
+
+  startCountdown();
+  initScrollReveal();
+  initNavDots();
+}
+
+/* ===== COUNTDOWN ===== */
+function startCountdown() {
+  const target = new Date('2026-06-06T11:00:00');
+  function update() {
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('cd-d').textContent = '00';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+/* ===== CARD TOGGLE ===== */
+function toggleCard(card) {
+  if (typeof card === 'string') card = document.getElementById(card);
+  card.classList.toggle('open');
+}
+
+/* ===== SCROLL REVEAL ===== */
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+/* ===== NAV DOTS ===== */
+function initNavDots() {
+  const sections = ['#hero', '#story', '#events', '#rsvp-section'];
+  const dots = document.querySelectorAll('.nav-dot');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const idx = sections.indexOf('#' + e.target.id);
+        if (idx !== -1) {
+          dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+        }
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => {
+    const el = document.querySelector(s);
+    if (el) observer.observe(el);
+  });
+}
+
+function scrollTo(sel) {
+  document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ===== MUSIC ===== */
+let musicPlaying = false;
+function toggleMusic() {
+  const audio = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicToggle');
+  if (musicPlaying) {
+    audio.pause();
+    btn.textContent = '♪';
+    btn.classList.remove('playing');
+    musicPlaying = false;
+  } else {
+    audio.play().catch(() => {});
+    btn.textContent = '♫';
+    btn.classList.add('playing');
+    musicPlaying = true;
+  }
+}
+
+/* ===== RSVP SUBMIT ===== */
+function submitRSVP() {
+  const name = document.getElementById('rsvp-name').value.trim();
+  const attend = document.getElementById('rsvp-attend').value;
+  if (!name || !attend) {
+    // Shake effect
+    const form = document.getElementById('rsvp-form-wrap');
+    gsap.fromTo(form, { x: -8 }, { x: 0, duration: 0.5, ease: 'elastic.out(1,0.3)', repeat: 2, yoyo: true });
+    return;
+  }
+  // Success
+  gsap.to('#rsvp-form-wrap', {
+    opacity: 0, y: -20, duration: 0.4,
+    onComplete: () => {
+      document.getElementById('rsvp-form-wrap').style.display = 'none';
+      const success = document.getElementById('rsvp-success');
+      success.style.display = 'block';
+      gsap.from(success, { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' });
+    }
+  });
+}
+
+/* ===== SHARE ===== */
+function shareInvite() {
+  const data = {
+    title: "Jack & Natalia's Wedding",
+    text: "You are cordially invited to celebrate our wedding! 💍",
+    url: window.location.href
+  };
+  if (navigator.share) {
+    navigator.share(data).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(window.location.href).then(() => {
+      const btn = document.getElementById('shareBtn');
+      btn.textContent = '✓';
+      setTimeout(() => btn.textContent = '↗', 2000);
+    });
+  }
+}
+</script>
+</body>
+</html>
