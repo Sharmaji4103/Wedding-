@@ -103,7 +103,7 @@
     }
 
     /* =====================================================
-       HERO
+       HERO (Desktop & Base)
     ===================================================== */
     .hero {
         position: relative;
@@ -122,6 +122,7 @@
         object-fit: cover;
         object-position: center right;
         z-index: 1;
+        opacity: 1;
     }
     .hero-image-overlay {
         position: absolute;
@@ -139,7 +140,7 @@
         margin: auto;
     }
     .hero-text { width: 55%; }
-    .hero-small-title { margin-bottom: 20px; color: #d4af37; font-size: 12px; font-weight: 700; letter-spacing: 4px; }
+    .hero-small-title { margin-bottom: 20px; color: #d4af37; font-size: 12px; font-weight: 700; letter-spacing: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
     .hero h1 {
         max-width: 650px;
         font-family: Georgia, "Times New Roman", serif;
@@ -147,9 +148,18 @@
         font-weight: 400;
         line-height: 1.05;
         color: #fff;
+        text-shadow: 0 3px 8px rgba(0,0,0,0.85);
     }
     .hero h1 .gold { display: block; color: #d4af37; font-style: italic; }
-    .hero-description { max-width: 510px; margin-top: 25px; margin-bottom: 35px; color: #d6d6d6; font-size: 15px; line-height: 1.8; }
+    .hero-description {
+        max-width: 510px;
+        margin-top: 25px;
+        margin-bottom: 35px;
+        color: #e5e5e5;
+        font-size: 15px;
+        line-height: 1.8;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+    }
     .hero-buttons { display: flex; align-items: center; gap: 15px; }
 
     .btn {
@@ -164,8 +174,8 @@
     }
     .btn-primary { background: #d4af37; color: #000; border: 1px solid #d4af37; }
     .btn-primary:hover { background: transparent; color: #d4af37; }
-    .btn-outline { background: transparent; color: #fff; border: 1px solid #fff; }
-    .btn-outline:hover { border-color: #d4af37; color: #d4af37; }
+    .btn-outline { background: rgba(0,0,0,0.3); color: #fff; border: 1px solid #fff; backdrop-filter: blur(4px); }
+    .btn-outline:hover { border-color: #d4af37; color: #d4af37; background: transparent; }
 
     /* =====================================================
        ABOUT
@@ -534,7 +544,7 @@
     .event-book-btn:hover { background: #d4af37; color: #000; }
 
     /* =====================================================
-       PORTFOLIO (Uncropped Image Grid)
+       PORTFOLIO
     ===================================================== */
     .gallery-section { padding: 110px 0; background: #f8f3ec; color: #211916; }
     .gallery-heading { max-width: 650px; margin-bottom: 50px; }
@@ -689,7 +699,7 @@
     }
 
     /* =====================================================
-       RESPONSIVE BREAKPOINTS
+       RESPONSIVE & MOBILE HERO REVISION
     ===================================================== */
     @media (max-width: 1100px) {
         .event-package-grid { grid-template-columns: repeat(3, 1fr); }
@@ -703,6 +713,7 @@
         .contact-grid { grid-template-columns: 1fr; gap: 50px; }
     }
 
+    /* Tablet / Mobile Menu & Stack */
     @media (max-width: 900px) {
         .navbar {
             display: none;
@@ -720,12 +731,25 @@
         .menu-toggle { display: block; }
         .appointment-btn { width: 100%; text-align: center; }
 
-        .hero-image { width: 100%; opacity: 0.45; }
+        /* FIXED HERO FOR MOBILE: full visibility with readable text scrim */
+        .hero {
+            min-height: 85vh;
+            align-items: flex-end;
+            padding-bottom: 60px;
+        }
+        .hero-image {
+            width: 100%;
+            opacity: 0.85; /* Bright & clear */
+            object-position: center 20%;
+        }
         .hero-image-overlay {
             width: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.7), rgba(0,0,0,0.4));
+            /* Gradient darkens slightly from center to bottom where text sits */
+            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 45%, rgba(0,0,0,0.2) 100%);
         }
-        .hero-text { width: 85%; }
+        .hero-text {
+            width: 100%;
+        }
 
         .beauty-container { grid-template-columns: 1fr; gap: 50px; }
         .beauty-content { max-width: 100%; }
@@ -736,10 +760,25 @@
         .footer-grid { grid-template-columns: 1fr; gap: 40px; }
     }
 
+    /* Small Mobile Specifics */
     @media (max-width: 600px) {
         .container { width: 90%; }
-        .hero-text { width: 100%; }
-        .hero-buttons { flex-direction: column; width: 100%; }
+        
+        .hero {
+            min-height: 80vh;
+            padding-top: 100px;
+            padding-bottom: 45px;
+        }
+        .hero-image {
+            opacity: 0.88;
+            object-position: center center;
+        }
+        .hero-image-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.15) 100%);
+        }
+        .hero h1 { font-size: 38px; }
+        .hero-description { font-size: 14px; margin-top: 15px; margin-bottom: 25px; }
+        .hero-buttons { flex-direction: column; width: 100%; gap: 12px; }
         .btn { width: 100%; }
 
         .services-pricing-grid,
