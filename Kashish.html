@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-theme="ivory">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,32 +20,108 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- GSAP, ScrollTrigger & MotionPathPlugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+
   <style>
-    ::selection {
-      background-color: #C8FF00;
-      color: #111111;
+    /* ==================== MULTI-THEME CSS VARIABLES ==================== */
+    :root, [data-theme="ivory"] {
+      --bg-primary: #ECE8E2;
+      --bg-secondary: #E2DCD2;
+      --bg-card: #FFFFFF;
+      --bg-dark-block: #111111;
+      --text-primary: #111111;
+      --text-secondary: rgba(17, 17, 17, 0.78);
+      --text-muted: rgba(17, 17, 17, 0.55);
+      --text-on-dark: #F7F6F2;
+      --accent: #C8FF00;
+      --accent-text: #111111;
+      --border-color: rgba(17, 17, 17, 0.16);
+      --nav-bg: rgba(236, 232, 226, 0.9);
+      --line-stroke: rgba(17, 17, 17, 0.28);
     }
 
-    :root {
-      --studio-bg: #ECE8E2;
-      --noir: #111111;
-      --lime: #C8FF00;
+    /* Palette 2: Chocolate Brown + Teal */
+    [data-theme="choco-teal"] {
+      --bg-primary: #261712;
+      --bg-secondary: #1E110D;
+      --bg-card: #332019;
+      --bg-dark-block: #122E30;
+      --text-primary: #F5EFEA;
+      --text-secondary: rgba(245, 239, 234, 0.82);
+      --text-muted: rgba(245, 239, 234, 0.6);
+      --text-on-dark: #F5EFEA;
+      --accent: #1D787C;
+      --accent-text: #FFFFFF;
+      --border-color: rgba(245, 239, 234, 0.18);
+      --nav-bg: rgba(38, 23, 18, 0.92);
+      --line-stroke: rgba(245, 239, 234, 0.35);
+    }
+
+    /* Palette 3: Lime + Espresso Brown */
+    [data-theme="lime-brown"] {
+      --bg-primary: #2E1E16;
+      --bg-secondary: #241710;
+      --bg-card: #3B281E;
+      --bg-dark-block: #1B110C;
+      --text-primary: #FAF7F2;
+      --text-secondary: rgba(250, 247, 242, 0.84);
+      --text-muted: rgba(250, 247, 242, 0.6);
+      --text-on-dark: #FAF7F2;
+      --accent: #9EBD1A;
+      --accent-text: #111111;
+      --border-color: rgba(250, 247, 242, 0.18);
+      --nav-bg: rgba(46, 30, 22, 0.92);
+      --line-stroke: rgba(250, 247, 242, 0.35);
+    }
+
+    /* Palette 4: Chocolate Brown + Powder Blue */
+    [data-theme="choco-blue"] {
+      --bg-primary: #2B1D17;
+      --bg-secondary: #221611;
+      --bg-card: #38261E;
+      --bg-dark-block: #1B2632;
+      --text-primary: #F4F1EE;
+      --text-secondary: rgba(244, 241, 238, 0.84);
+      --text-muted: rgba(244, 241, 238, 0.6);
+      --text-on-dark: #F4F1EE;
+      --accent: #8DA9C4;
+      --accent-text: #111111;
+      --border-color: rgba(244, 241, 238, 0.18);
+      --nav-bg: rgba(43, 29, 23, 0.92);
+      --line-stroke: rgba(244, 241, 238, 0.35);
+    }
+
+    ::selection {
+      background-color: var(--accent);
+      color: var(--accent-text);
     }
 
     body {
-      background-color: #ECE8E2;
-      color: #111111;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
+      transition: background-color 0.45s ease, color 0.45s ease;
     }
 
-    .font-serif-display {
-      font-family: 'Italiana', serif;
-    }
+    .font-serif-display { font-family: 'Italiana', serif; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
 
-    .font-cormorant {
-      font-family: 'Cormorant Garamond', serif;
-    }
+    /* Theme Utility Bindings */
+    .theme-bg-primary { background-color: var(--bg-primary); transition: background-color 0.45s ease; }
+    .theme-bg-secondary { background-color: var(--bg-secondary); transition: background-color 0.45s ease; }
+    .theme-bg-card { background-color: var(--bg-card); transition: background-color 0.45s ease, border-color 0.3s ease; }
+    .theme-bg-dark { background-color: var(--bg-dark-block); transition: background-color 0.45s ease; }
+    .theme-text-primary { color: var(--text-primary); transition: color 0.45s ease; }
+    .theme-text-secondary { color: var(--text-secondary); transition: color 0.45s ease; }
+    .theme-text-muted { color: var(--text-muted); transition: color 0.45s ease; }
+    .theme-border { border-color: var(--border-color); transition: border-color 0.45s ease; }
+    .theme-accent-bg { background-color: var(--accent); color: var(--accent-text); transition: all 0.35s ease; }
+    .theme-accent-text { color: var(--accent); transition: color 0.35s ease; }
+    .theme-nav { background-color: var(--nav-bg); border-bottom: 1px solid var(--border-color); transition: background-color 0.45s ease; }
 
     /* Subtle Film Grain */
     .grain-overlay {
@@ -55,20 +131,20 @@
       height: 100vh;
       pointer-events: none;
       z-index: 90;
-      opacity: 0.02;
+      opacity: 0.025;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     }
 
-    /* HERO BANNER RESPONSIVE ARCHITECTURE */
+    /* HERO BANNER */
     .hero-container {
       position: relative;
       width: 100vw;
       min-height: 100vh;
       background-color: #ECE8E2;
+      color: #111111;
       overflow: hidden;
     }
 
-    /* Desktop: Absolute Positioned Right | Mobile: Fluid Top Container */
     .hero-video-box {
       width: 100%;
       display: flex;
@@ -117,7 +193,6 @@
       }
     }
 
-    /* Desktop Left Gradient Feather */
     .hero-left-feather {
       position: absolute;
       top: 0;
@@ -130,9 +205,7 @@
     }
 
     @media (max-width: 1023px) {
-      .hero-left-feather {
-        display: none;
-      }
+      .hero-left-feather { display: none; }
     }
 
     /* Deliberate Editorial Typewriter Cursor */
@@ -150,7 +223,6 @@
       50% { opacity: 0; }
     }
 
-    /* Fade-in transitions for metadata and action blocks */
     .fade-item-hidden {
       opacity: 0;
       transform: translateY(16px);
@@ -178,8 +250,207 @@
       animation-play-state: paused;
     }
 
-    .hairline-b { border-bottom: 1px solid rgba(17, 17, 17, 0.12); }
-    .hairline-t { border-top: 1px solid rgba(17, 17, 17, 0.12); }
+    /* Theme Swatch Active Ring */
+    .swatch-btn {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .swatch-btn:hover {
+      transform: scale(1.15);
+    }
+    .swatch-btn.active {
+      transform: scale(1.18);
+      box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--text-primary);
+    }
+
+    /* ==================== FULL-VISIBILITY PINNED IPHONE MOCKUP ==================== */
+    .pinned-phone-viewport {
+      height: calc(100vh - 80px);
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .iphone-chassis {
+      width: 245px;
+      height: min(56vh, 470px);
+      min-height: 410px;
+      border-radius: 38px;
+      background: #141414;
+      padding: 8px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.38),
+        0 0 0 2px #363636,
+        inset 0 0 0 2px #000000;
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (min-width: 640px) {
+      .iphone-chassis {
+        width: 270px;
+        height: min(62vh, 520px);
+        min-height: 460px;
+        border-radius: 42px;
+        padding: 9px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .iphone-chassis {
+        width: 285px;
+        height: min(65vh, 545px);
+        min-height: 490px;
+        border-radius: 44px;
+        padding: 10px;
+      }
+    }
+
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 31px;
+      background: #0F1115;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 640px) {
+      .iphone-screen { border-radius: 34px; }
+    }
+
+    .dynamic-island {
+      width: 78px;
+      height: 20px;
+      background: #000000;
+      border-radius: 999px;
+      margin: 6px auto 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+
+    .dynamic-island-lens {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1e3a8a 20%, #090d16 80%);
+    }
+
+    .phone-screen-view {
+      position: absolute;
+      inset: 0;
+      padding-top: 34px;
+      padding-bottom: 18px;
+      padding-left: 13px;
+      padding-right: 13px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: scale(0.95) translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .phone-screen-view.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Home Indicator Bar at Bottom of iPhone Screen */
+    .iphone-home-indicator {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 95px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.45);
+      z-index: 40;
+      pointer-events: none;
+    }
+
+    .callout-badge {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .callout-badge.active {
+      background-color: var(--accent) !important;
+      color: var(--accent-text) !important;
+      border-color: var(--text-primary) !important;
+      transform: scale(1.05);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+    }
+    .callout-badge.active .callout-sub {
+      color: var(--accent-text) !important;
+      opacity: 0.85;
+    }
+
+    .app-icon-tile {
+      transition: transform 0.2s ease;
+    }
+    .app-icon-tile:hover {
+      transform: scale(1.08);
+    }
+
+    /* ==================== WALKING CAREER JOURNEY ANIMATIONS ==================== */
+    @keyframes legSwingLeft {
+      0%, 100% { transform: rotate(-18deg); }
+      50% { transform: rotate(22deg); }
+    }
+    @keyframes legSwingRight {
+      0%, 100% { transform: rotate(22deg); }
+      50% { transform: rotate(-18deg); }
+    }
+    @keyframes armSwingLeft {
+      0%, 100% { transform: rotate(16deg); }
+      50% { transform: rotate(-16deg); }
+    }
+    @keyframes armSwingRight {
+      0%, 100% { transform: rotate(-16deg); }
+      50% { transform: rotate(16deg); }
+    }
+    @keyframes walkerBounce {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .walker-is-moving .walker-body-bob {
+      animation: walkerBounce 0.45s ease-in-out infinite;
+    }
+    .walker-is-moving .walker-leg-left {
+      transform-origin: 24px 38px;
+      animation: legSwingLeft 0.45s ease-in-out infinite;
+    }
+    .walker-is-moving .walker-leg-right {
+      transform-origin: 26px 38px;
+      animation: legSwingRight 0.45s ease-in-out infinite;
+    }
+    .walker-is-moving .walker-arm-left {
+      transform-origin: 24px 23px;
+      animation: armSwingLeft 0.45s ease-in-out infinite;
+    }
+    .walker-is-moving .walker-arm-right {
+      transform-origin: 26px 23px;
+      animation: armSwingRight 0.45s ease-in-out infinite;
+    }
+
+    .milestone-node-dot {
+      transition: transform 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    .milestone-card-active .milestone-node-dot {
+      background-color: var(--accent) !important;
+      transform: scale(1.3);
+      box-shadow: 0 0 0 6px rgba(200, 255, 0, 0.25);
+    }
   </style>
 </head>
 <body class="antialiased relative">
@@ -187,36 +458,57 @@
   <!-- Grain Overlay -->
   <div class="grain-overlay" aria-hidden="true"></div>
 
-  <!-- ==================== NAVIGATION ==================== -->
-  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[#ECE8E2]/90 hairline-b">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+  <!-- ==================== NAVIGATION WITH MULTI-COLOR PALETTE SWITCHER ==================== -->
+  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md theme-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 h-20 flex items-center justify-between gap-3">
       
       <!-- Monogram -->
-      <a href="#" class="group flex items-center gap-2.5 text-[#111111]">
-        <span class="w-8 h-8 rounded-full border border-[#111111]/30 flex items-center justify-center text-xs font-bold tracking-tight group-hover:bg-[#C8FF00] transition-colors">
+      <a href="#" class="group flex items-center gap-2.5 theme-text-primary shrink-0">
+        <span class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold tracking-tight theme-accent-bg">
           KR
         </span>
-        <span class="text-xs font-sans tracking-[0.25em] font-bold uppercase text-[#111111]">KASHISH / 2026</span>
+        <span class="hidden sm:inline text-xs font-sans tracking-[0.25em] font-bold uppercase">KASHISH / 2026</span>
       </a>
 
       <!-- Desktop Nav -->
-      <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold uppercase tracking-[0.2em] text-[#111111]/75">
-        <a href="#about" class="hover:text-[#111111] transition-colors">The Strategist</a>
-        <a href="#experience" class="hover:text-[#111111] transition-colors">Trajectory</a>
-        <a href="#academics" class="hover:text-[#111111] transition-colors">Academics</a>
-        <a href="#skills" class="hover:text-[#111111] transition-colors">Ecosystem</a>
-        <a href="#contact" class="hover:text-[#111111] transition-colors">Connect</a>
+      <nav class="hidden lg:flex items-center space-x-7 text-xs font-semibold uppercase tracking-[0.2em] theme-text-secondary">
+        <a href="#about" class="hover:opacity-100 transition-opacity">The Strategist</a>
+        <a href="#experience" class="hover:opacity-100 transition-opacity">Career Journey</a>
+        <a href="#academics" class="hover:opacity-100 transition-opacity">Academics</a>
+        <a href="#skills" class="hover:opacity-100 transition-opacity">Ecosystem</a>
+        <a href="#contact" class="hover:opacity-100 transition-opacity">Connect</a>
       </nav>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-3">
-        <button id="replayBtn" title="Replay Video Sequence" class="inline-flex items-center gap-2 px-3.5 py-1.5 text-[11px] font-sans font-semibold uppercase tracking-widest text-[#111111] border border-[#111111]/30 rounded-full hover:bg-white bg-white/60 transition-all">
+      <!-- Multi-Color Theme Switcher + Replay -->
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        
+        <!-- Color Palette Swatches -->
+        <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border theme-border theme-bg-card shadow-sm" title="Switch Editorial Color Palette">
+          <button onclick="setTheme('ivory')" data-theme-btn="ivory" aria-label="Off-White & Beige Theme" title="Light: Off-White & Beige" class="swatch-btn active w-5 h-5 rounded-full border border-black/25 overflow-hidden flex">
+            <span class="w-1/2 h-full bg-[#ECE8E2]"></span>
+            <span class="w-1/2 h-full bg-[#C8FF00]"></span>
+          </button>
+          <button onclick="setTheme('choco-teal')" data-theme-btn="choco-teal" aria-label="Chocolate Brown & Teal Theme" title="Chocolate Brown + Teal" class="swatch-btn w-5 h-5 rounded-full border border-white/30 overflow-hidden flex">
+            <span class="w-1/2 h-full bg-[#261712]"></span>
+            <span class="w-1/2 h-full bg-[#1D787C]"></span>
+          </button>
+          <button onclick="setTheme('lime-brown')" data-theme-btn="lime-brown" aria-label="Lime & Brown Theme" title="Lime + Brown" class="swatch-btn w-5 h-5 rounded-full border border-white/30 overflow-hidden flex">
+            <span class="w-1/2 h-full bg-[#9EBD1A]"></span>
+            <span class="w-1/2 h-full bg-[#2E1E16]"></span>
+          </button>
+          <button onclick="setTheme('choco-blue')" data-theme-btn="choco-blue" aria-label="Chocolate Brown & Powder Blue Theme" title="Chocolate Brown + Powder Blue" class="swatch-btn w-5 h-5 rounded-full border border-white/30 overflow-hidden flex">
+            <span class="w-1/2 h-full bg-[#2B1D17]"></span>
+            <span class="w-1/2 h-full bg-[#8DA9C4]"></span>
+          </button>
+        </div>
+
+        <button id="replayBtn" title="Replay Video Sequence" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] sm:text-[11px] font-sans font-semibold uppercase tracking-widest theme-text-primary border theme-border rounded-full theme-bg-card hover:opacity-85 transition-all">
           <i class="fa-solid fa-arrow-rotate-right text-[10px]"></i>
-          <span>Replay Video</span>
+          <span class="hidden sm:inline">Replay</span>
         </button>
 
-        <a href="#contact" class="hidden sm:inline-flex px-5 py-2.5 rounded-full bg-[#111111] text-[#F7F6F2] hover:bg-[#C8FF00] hover:text-[#111111] text-xs tracking-widest uppercase font-bold transition-all shadow-md">
-          Initiate Contact
+        <a href="#contact" class="hidden md:inline-flex px-5 py-2.5 rounded-full theme-accent-bg text-xs tracking-widest uppercase font-bold transition-all shadow-md hover:scale-105">
+          Contact
         </a>
       </div>
     </div>
@@ -225,7 +517,7 @@
   <!-- ==================== 1. HERO BANNER ==================== -->
   <section id="hero" class="hero-container flex flex-col lg:flex-row lg:items-center pt-24 lg:pt-0">
     
-    <!-- Video Box: Responsive for both Mobile and Desktop -->
+    <!-- Video Box -->
     <div class="hero-video-box h-[46vh] sm:h-[50vh] lg:h-full shrink-0">
       <video
         id="kashishVideo"
@@ -238,35 +530,35 @@
       </video>
     </div>
 
-    <!-- Desktop Subtle Left Gradient Blend -->
+    <!-- Desktop Left Feather -->
     <div class="hero-left-feather"></div>
 
     <!-- Live Status Pill -->
     <div id="videoStatusPill" class="absolute top-24 left-6 md:left-12 z-20 flex items-center gap-2 px-3.5 py-1.5 bg-white rounded-full text-[11px] font-mono uppercase tracking-widest text-[#111111] border border-[#111111]/20 shadow-sm transition-all duration-300">
-      <span id="statusIndicatorDot" class="w-2 h-2 rounded-full bg-[#C8FF00] animate-ping"></span>
+      <span id="statusIndicatorDot" class="w-2 h-2 rounded-full theme-accent-bg animate-ping"></span>
       <span id="statusLabel" class="font-semibold">Walking Into Frame...</span>
     </div>
 
-    <!-- MAIN EDITORIAL CONTENT: Slow, deliberate sequential typewriter reveal -->
+    <!-- MAIN EDITORIAL CONTENT -->
     <div class="relative z-20 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pointer-events-none pb-12 lg:pb-0">
       
       <!-- Left Column: Typewriter Content Area -->
       <div id="heroContent" class="lg:col-span-6 xl:col-span-5 flex flex-col items-start max-w-lg pointer-events-auto">
         
-        <!-- Status Tag (Fades in first) -->
+        <!-- Status Tag -->
         <div id="tagBadge" class="fade-item-hidden inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-[#111111]/20 bg-white shadow-sm mb-4">
-          <span class="w-2 h-2 rounded-full bg-[#C8FF00] border border-[#111111]/40"></span>
+          <span class="w-2 h-2 rounded-full theme-accent-bg border border-[#111111]/40"></span>
           <span class="text-[11px] font-sans tracking-[0.2em] uppercase text-[#111111] font-bold">
             Available for High-Impact Roles &amp; Consulting
           </span>
         </div>
 
-        <!-- Line 1: Main Name (Slow, elegant typing: KASHISH RATHORE) -->
+        <!-- Line 1: Main Name -->
         <h1 class="font-serif-display text-4xl sm:text-6xl lg:text-8xl tracking-tight text-[#111111] leading-[0.92] mb-3 min-h-[1.9em]">
           <span id="typedName"></span><span id="cursorName" class="type-cursor hidden"></span>
         </h1>
 
-        <!-- Line 2: Designation (Slow, clear typing: DIGITAL MARKETING EXECUTIVE) -->
+        <!-- Line 2: Designation -->
         <div class="flex items-center gap-3.5 mb-2.5 min-h-[2rem]">
           <div id="designationBar" class="h-[1.5px] w-8 sm:w-12 bg-[#111111] opacity-0 transition-opacity duration-500"></div>
           <h2 class="font-sans text-sm sm:text-lg lg:text-xl font-medium tracking-[0.16em] uppercase text-[#111111]">
@@ -274,12 +566,12 @@
           </h2>
         </div>
 
-        <!-- Line 3: Pillar Keywords (Types steadily) -->
+        <!-- Line 3: Pillar Keywords -->
         <p class="font-sans text-[11px] sm:text-xs lg:text-sm tracking-[0.2em] uppercase text-[#111111]/80 font-bold mb-5 min-h-[1.5rem]">
           <span id="typedPillars"></span><span id="cursorPillars" class="type-cursor hidden"></span>
         </p>
 
-        <!-- Line 4: Metadata Grid (Fades in) -->
+        <!-- Line 4: Metadata Grid -->
         <div id="metaGrid" class="fade-item-hidden grid grid-cols-1 sm:grid-cols-3 gap-3.5 w-full py-4 border-y border-[#111111]/20 mb-6 text-xs font-sans bg-white/95 rounded-xl px-4 shadow-sm">
           <div>
             <span class="block text-[#111111]/60 uppercase tracking-widest text-[10px] font-bold mb-0.5">Email</span>
@@ -295,24 +587,24 @@
           </div>
         </div>
 
-        <!-- Line 5: Action Buttons (Fades in) -->
+        <!-- Line 5: Action Buttons -->
         <div id="actionButtons" class="fade-item-hidden flex flex-wrap items-center gap-3.5">
-          <a href="#experience" class="px-6 py-3 bg-[#111111] text-[#F7F6F2] rounded-full text-xs font-sans tracking-[0.18em] uppercase font-bold hover:bg-[#C8FF00] hover:text-[#111111] transition-all shadow-md">
-            View Trajectory
+          <a href="#experience" class="px-6 py-3 bg-[#111111] text-[#F7F6F2] rounded-full text-xs font-sans tracking-[0.18em] uppercase font-bold hover:opacity-85 transition-all shadow-md">
+            View Career Journey
           </a>
-          <a href="#contact" class="px-6 py-3 border border-[#111111] bg-white rounded-full text-xs font-sans tracking-[0.18em] uppercase font-bold text-[#111111] hover:bg-[#C8FF00] hover:border-[#C8FF00] transition-all">
+          <a href="#contact" class="px-6 py-3 border border-[#111111] theme-accent-bg rounded-full text-xs font-sans tracking-[0.18em] uppercase font-bold transition-all shadow-sm">
             Download Resume
           </a>
         </div>
 
       </div>
 
-      <!-- Right Column: Space reserved on Desktop for Kashish -->
+      <!-- Right Column Space -->
       <div class="hidden lg:block lg:col-span-6 xl:col-span-7 h-full pointer-events-none"></div>
 
     </div>
 
-    <!-- Bottom Scroll Indicator (Desktop only) -->
+    <!-- Bottom Scroll Indicator -->
     <div id="scrollPrompt" class="fade-item-hidden hidden lg:flex absolute bottom-6 left-0 right-0 z-20 max-w-7xl mx-auto px-6 md:px-12 w-full items-center justify-between text-[11px] font-sans tracking-[0.25em] uppercase text-[#111111]/70 pointer-events-none">
       <div class="flex items-center gap-2 font-bold">
         <span class="w-2 h-2 rounded-full bg-[#111111]"></span>
@@ -329,298 +621,787 @@
   </section>
 
   <!-- ==================== MARQUEE BRAND STRIP ==================== -->
-  <div class="w-full bg-[#111111] text-[#F7F6F2] py-4 overflow-hidden hairline-t hairline-b">
+  <div class="w-full theme-bg-dark text-[#F7F6F2] py-4 overflow-hidden border-y theme-border">
     <div class="animate-marquee whitespace-nowrap text-xs md:text-sm font-sans tracking-[0.3em] uppercase font-semibold">
-      <span class="mx-6">Social Media Marketing</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">High-ROAS Meta Advertising</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Organic SEO &amp; Technical Audits</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Data-Driven Growth Strategies</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Content Architecture &amp; Calendaring</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Social Media Marketing</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">High-ROAS Meta Advertising</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Organic SEO &amp; Technical Audits</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Data-Driven Growth Strategies</span> <span class="text-[#C8FF00]">✦</span>
-      <span class="mx-6">Content Architecture &amp; Calendaring</span> <span class="text-[#C8FF00]">✦</span>
+      <span class="mx-6">Social Media Marketing</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">High-ROAS Meta Advertising</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Organic SEO &amp; Technical Audits</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Data-Driven Growth Strategies</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Content Architecture &amp; Calendaring</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Social Media Marketing</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">High-ROAS Meta Advertising</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Organic SEO &amp; Technical Audits</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Data-Driven Growth Strategies</span> <span class="theme-accent-text">✦</span>
+      <span class="mx-6">Content Architecture &amp; Calendaring</span> <span class="theme-accent-text">✦</span>
     </div>
   </div>
 
-  <!-- ==================== 2. ABOUT ME ==================== -->
-  <section id="about" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+  <!-- ==================== 2. ABOUT ME + FULL-FRAME PINNED SMARTPHONE APP SHOWCASE ==================== -->
+  <section id="about" class="pt-20 md:pt-28 overflow-hidden theme-bg-primary">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
       
-      <!-- Section Index -->
-      <div class="lg:col-span-4 flex flex-col justify-between">
-        <div>
-          <span class="font-mono text-xs uppercase tracking-[0.25em] text-[#111111]/60 font-bold block mb-2">01 / PHILOSOPHY</span>
-          <h2 class="font-serif-display italic text-4xl sm:text-5xl lg:text-6xl text-[#111111] font-normal leading-tight">
-            The Strategic Creative
-          </h2>
-          <div class="w-12 h-1 bg-[#C8FF00] mt-3 mb-5 border border-[#111111]/20"></div>
-          <p class="text-xs uppercase tracking-widest text-[#111111]/70 leading-relaxed font-bold max-w-xs">
-            Synthesizing analytical rigor with visual cultural resonance.
-          </p>
+      <!-- Top Split Row: Left enters from LEFT, Right enters from RIGHT -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start mb-10">
+        
+        <!-- LEFT BLOCK: Comes from LEFT -->
+        <div id="aboutLeftCol" class="lg:col-span-5 flex flex-col justify-between">
+          <div>
+            <span class="font-mono text-xs uppercase tracking-[0.25em] theme-text-muted font-bold block mb-2">01 / PHILOSOPHY</span>
+            <h2 class="font-serif-display italic text-4xl sm:text-5xl lg:text-6xl theme-text-primary font-normal leading-tight">
+              The Strategic Creative
+            </h2>
+            <div class="w-14 h-1.5 theme-accent-bg mt-4 mb-5 rounded-full"></div>
+            <p class="text-xs uppercase tracking-widest theme-text-secondary leading-relaxed font-bold max-w-sm">
+              Synthesizing analytical rigor with visual cultural resonance.
+            </p>
+          </div>
+
+          <div class="hidden lg:block pt-8 border-t theme-border mt-8">
+            <p class="font-cormorant italic text-2xl theme-text-primary leading-snug font-medium">
+              "Marketing is no longer just selling a product; it is curating an undeniable identity that demands market attention."
+            </p>
+          </div>
         </div>
 
-        <div class="hidden lg:block pt-8 border-t border-[#111111]/15 mt-8">
-          <p class="font-cormorant italic text-2xl text-[#111111] leading-snug font-medium">
-            "Marketing is no longer just selling a product; it is curating an undeniable identity that demands market attention."
+        <!-- RIGHT BLOCK: Comes from RIGHT -->
+        <div id="aboutRightCol" class="lg:col-span-7 space-y-5 text-base sm:text-lg lg:text-xl font-normal theme-text-primary leading-relaxed">
+          <p class="first-letter:text-5xl first-letter:font-cormorant first-letter:float-left first-letter:mr-3 first-letter:font-bold">
+            MBA graduate specializing in <strong class="font-bold underline decoration-4" style="text-decoration-color: var(--accent);">Digital Marketing</strong> with hands-on experience in social media, Meta Ads, SEO, and client management. Looking to turn ideas into measurable results while bringing a proactive mindset, fresh perspectives, and a strong willingness to grow.
           </p>
-        </div>
-      </div>
-
-      <!-- Main Narrative -->
-      <div class="lg:col-span-8 flex flex-col justify-between space-y-8">
-        <div class="space-y-4 text-base sm:text-lg lg:text-xl font-normal text-[#111111] leading-relaxed">
-          <p class="first-letter:text-5xl first-letter:font-cormorant first-letter:float-left first-letter:mr-3 first-letter:text-[#111111] first-letter:font-bold">
-            MBA graduate specializing in <strong class="font-bold text-[#111111] underline decoration-[#C8FF00] decoration-4">Digital Marketing</strong> with hands-on experience in social media, Meta Ads, SEO, and client management. Looking to turn ideas into measurable results while bringing a proactive mindset, fresh perspectives, and a strong willingness to grow.
-          </p>
-          <p class="text-[#111111]/90">
+          <p class="theme-text-secondary">
             I operate at the intersection of creative intuition and algorithmic precision. Having steered campaigns from ideation through analytical performance reporting, I focus relentlessly on turning raw marketing ideas into measurable, revenue-generating outcomes.
           </p>
         </div>
 
-        <!-- 4 Value Pillars -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+      </div>
+    </div>
+
+    <!-- ==================== PINNED STICKY PHONE STAGE (100% Full Phone Frame Visible!) ==================== -->
+    <div id="phoneStage" class="w-full pinned-phone-viewport px-4 sm:px-6 md:px-12 theme-bg-primary">
+      
+      <!-- Stage Header -->
+      <div class="text-center max-w-xl mx-auto mb-3 sm:mb-4">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full border theme-border theme-bg-card text-[10px] font-mono uppercase tracking-[0.22em] theme-text-secondary font-bold mb-1.5">
+          <span class="w-2 h-2 rounded-full theme-accent-bg animate-pulse"></span>
+          <span id="stageStepIndicator">Scroll to Explore All 4 Pillars (0 / 4)</span>
+        </span>
+        <h3 class="font-cormorant text-2xl sm:text-3xl lg:text-4xl font-bold theme-text-primary">
+          4 Core Digital Marketing Pillars
+        </h3>
+      </div>
+
+      <!-- Centerpiece Phone + 4 Corner Architectural Callout Pointers -->
+      <div class="relative max-w-5xl w-full mx-auto flex flex-col lg:flex-row items-center justify-center">
+        
+        <!-- SVG Architectural Pointer Lines (Desktop) -->
+        <svg class="hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 540" fill="none">
+          <!-- Top-Left Callout Line -->
+          <polyline points="235,95 340,95 385,145" stroke="var(--line-stroke)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <circle cx="385" cy="145" r="4" fill="var(--accent)" stroke="var(--text-primary)" stroke-width="1.5" />
           
-          <div class="p-6 bg-white rounded-2xl border border-[#111111]/20 hover:border-[#111111] transition-all shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-xs tracking-widest text-[#111111]/60 font-bold uppercase">Pillar I</span>
-              <div class="w-8 h-8 rounded-full bg-[#EDE8E1] flex items-center justify-center text-[#111111]">
-                <i class="fa-solid fa-chart-line text-sm"></i>
-              </div>
-            </div>
-            <h3 class="font-cormorant text-2xl font-bold text-[#111111] mb-2">Performance &amp; ROAS</h3>
-            <p class="text-xs text-[#111111]/80 leading-relaxed font-medium">
-              Systematic audience segmentation, iterative creative testing, and rigorous ad budget efficiency across Meta Ads.
-            </p>
-          </div>
+          <!-- Bottom-Left Callout Line -->
+          <polyline points="235,435 340,435 385,385" stroke="var(--line-stroke)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <circle cx="385" cy="385" r="4" fill="var(--accent)" stroke="var(--text-primary)" stroke-width="1.5" />
 
-          <div class="p-6 bg-white rounded-2xl border border-[#111111]/20 hover:border-[#111111] transition-all shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-xs tracking-widest text-[#111111]/60 font-bold uppercase">Pillar II</span>
-              <div class="w-8 h-8 rounded-full bg-[#EDE8E1] flex items-center justify-center text-[#111111]">
-                <i class="fa-solid fa-magnifying-glass text-sm"></i>
-              </div>
-            </div>
-            <h3 class="font-cormorant text-2xl font-bold text-[#111111] mb-2">Search Visibility (SEO)</h3>
-            <p class="text-xs text-[#111111]/80 leading-relaxed font-medium">
-              Targeted keyword intelligence, on-page optimization, Google Search Console indexing, and organic growth architecture.
-            </p>
-          </div>
+          <!-- Top-Right Callout Line -->
+          <polyline points="765,95 660,95 615,145" stroke="var(--line-stroke)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <circle cx="615" cy="145" r="4" fill="var(--accent)" stroke="var(--text-primary)" stroke-width="1.5" />
 
-          <div class="p-6 bg-white rounded-2xl border border-[#111111]/20 hover:border-[#111111] transition-all shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-xs tracking-widest text-[#111111]/60 font-bold uppercase">Pillar III</span>
-              <div class="w-8 h-8 rounded-full bg-[#EDE8E1] flex items-center justify-center text-[#111111]">
-                <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
-              </div>
-            </div>
-            <h3 class="font-cormorant text-2xl font-bold text-[#111111] mb-2">Content Architecture</h3>
-            <p class="text-xs text-[#111111]/80 leading-relaxed font-medium">
-              30-day comprehensive content calendars, dynamic video storyboarding, high-engagement copywriting, and aesthetic curation.
-            </p>
-          </div>
+          <!-- Bottom-Right Callout Line -->
+          <polyline points="765,435 660,435 615,385" stroke="var(--line-stroke)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <circle cx="615" cy="385" r="4" fill="var(--accent)" stroke="var(--text-primary)" stroke-width="1.5" />
+        </svg>
 
-          <div class="p-6 bg-white rounded-2xl border border-[#111111]/20 hover:border-[#111111] transition-all shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-xs tracking-widest text-[#111111]/60 font-bold uppercase">Pillar IV</span>
-              <div class="w-8 h-8 rounded-full bg-[#EDE8E1] flex items-center justify-center text-[#111111]">
-                <i class="fa-solid fa-users text-sm"></i>
-              </div>
+        <!-- LEFT SIDE CALLOUTS (Desktop) -->
+        <div class="hidden lg:flex flex-col justify-between h-[430px] w-64 z-20 mr-8">
+          
+          <!-- Callout 1: Performance & Meta Ads -->
+          <button onclick="switchPhoneScreen(1)" data-callout="1" class="callout-badge text-left p-4 rounded-2xl border theme-border theme-bg-card shadow-md">
+            <div class="flex items-center gap-3 mb-1">
+              <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-sm">
+                <i class="fa-brands fa-meta"></i>
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-widest font-bold opacity-60">Pillar 01</span>
             </div>
-            <h3 class="font-cormorant text-2xl font-bold text-[#111111] mb-2">Client Management</h3>
-            <p class="text-xs text-[#111111]/80 leading-relaxed font-medium">
-              Clear client stakeholder alignment, data transparent executive reporting, and cross-functional brand strategy execution.
-            </p>
-          </div>
+            <div class="font-cormorant text-xl font-bold leading-tight">Performance &amp; ROAS</div>
+            <div class="callout-sub text-[11px] theme-text-secondary mt-0.5">Meta Ads &amp; Lead Funnels</div>
+          </button>
+
+          <!-- Callout 3: Search Visibility (SEO) -->
+          <button onclick="switchPhoneScreen(3)" data-callout="3" class="callout-badge text-left p-4 rounded-2xl border theme-border theme-bg-card shadow-md">
+            <div class="flex items-center gap-3 mb-1">
+              <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-sm">
+                <i class="fa-brands fa-google"></i>
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-widest font-bold opacity-60">Pillar 03</span>
+            </div>
+            <div class="font-cormorant text-xl font-bold leading-tight">Search Visibility (SEO)</div>
+            <div class="callout-sub text-[11px] theme-text-secondary mt-0.5">Search Console &amp; SEMrush</div>
+          </button>
 
         </div>
 
-      </div>
+        <!-- CENTERPIECE POP-UP FULL IPHONE MOCKUP -->
+        <div id="phonePopUpWrapper" class="relative z-20 flex flex-col items-center">
+          <div class="iphone-chassis">
+            <div class="iphone-screen">
+              
+              <!-- iPhone Dynamic Island & Status Bar -->
+              <div class="w-full px-4 pt-1.5 flex items-center justify-between text-[9px] font-semibold text-white/80 z-30">
+                <span>9:41</span>
+                <div class="dynamic-island !m-0">
+                  <div class="dynamic-island-lens"></div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <i class="fa-solid fa-signal text-[8px]"></i>
+                  <i class="fa-solid fa-wifi text-[8px]"></i>
+                  <i class="fa-solid fa-battery-full text-[9px]"></i>
+                </div>
+              </div>
 
+              <!-- ==================== SCREEN 0: SOCIAL MEDIA & MARKETING APP LAUNCHER ==================== -->
+              <div id="screen-0" class="phone-screen-view active bg-gradient-to-b from-[#171923] via-[#11131A] to-[#0B0D12] text-white">
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <div>
+                      <div class="text-[8px] font-mono uppercase tracking-widest text-[#C8FF00]">Kashish OS &bull; 2026</div>
+                      <div class="text-xs font-bold tracking-tight">Marketing Suite</div>
+                    </div>
+                    <button onclick="switchPhoneScreen(1)" class="px-2 py-0.5 rounded-full bg-white/10 text-[8px] font-mono hover:bg-white/20">
+                      Start &rarr;
+                    </button>
+                  </div>
+
+                  <!-- Live Analytics Widget Card inside Phone -->
+                  <div class="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 mb-3">
+                    <div class="flex items-center justify-between text-[9px] text-white/70 mb-0.5">
+                      <span>Monthly Campaign Reach</span>
+                      <span class="text-[#C8FF00] font-bold">+185% ↑</span>
+                    </div>
+                    <div class="text-lg font-extrabold tracking-tight mb-1">71,941 <span class="text-[10px] font-normal text-white/60">impressions</span></div>
+                    <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                      <div class="w-4/5 h-full bg-[#C8FF00] rounded-full"></div>
+                    </div>
+                  </div>
+
+                  <!-- Social Media & Marketing App Icons Grid -->
+                  <div class="text-[8px] font-mono uppercase tracking-widest text-white/50 mb-2">Scroll or Tap Any App</div>
+                  <div class="grid grid-cols-4 gap-2 text-center">
+                    
+                    <button onclick="switchPhoneScreen(1)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-brands fa-meta"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">Meta Ads</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(2)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-brands fa-instagram"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">Instagram</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(3)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-brands fa-google"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">SEO Suite</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(4)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-blue-800 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">LinkedIn</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(2)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-600 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-solid fa-palette"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">Canva</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(2)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-zinc-800 border border-white/20 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-solid fa-video"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">CapCut</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(3)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-solid fa-chart-pie"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">SEMrush</span>
+                    </button>
+
+                    <button onclick="switchPhoneScreen(4)" class="app-icon-tile flex flex-col items-center gap-0.5">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-400 to-green-600 text-black flex items-center justify-center text-sm shadow-md">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                      </div>
+                      <span class="text-[8px] font-medium text-white/85">Clients</span>
+                    </button>
+
+                  </div>
+                </div>
+
+                <!-- Bottom Dock -->
+                <div class="p-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-around mb-1">
+                  <button onclick="switchPhoneScreen(1)" class="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xs"><i class="fa-brands fa-meta"></i></button>
+                  <button onclick="switchPhoneScreen(2)" class="w-7 h-7 rounded-lg bg-pink-600 flex items-center justify-center text-white text-xs"><i class="fa-brands fa-instagram"></i></button>
+                  <button onclick="switchPhoneScreen(3)" class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-magnifying-glass-chart"></i></button>
+                  <button onclick="switchPhoneScreen(4)" class="w-7 h-7 rounded-lg bg-sky-600 flex items-center justify-center text-white text-xs"><i class="fa-brands fa-linkedin-in"></i></button>
+                </div>
+              </div>
+
+              <!-- ==================== SCREEN 1: PILLAR I - PERFORMANCE & ROAS ==================== -->
+              <div id="screen-1" class="phone-screen-view bg-gradient-to-b from-[#0E1E38] to-[#090D16] text-white">
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <button onclick="switchPhoneScreen(0)" class="text-[10px] text-blue-300 flex items-center gap-1 font-semibold">
+                      <i class="fa-solid fa-chevron-left text-[8px]"></i> Apps
+                    </button>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[8px] font-mono uppercase">Pillar 01 / 04</span>
+                  </div>
+
+                  <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-base mb-2 shadow-lg">
+                    <i class="fa-brands fa-meta"></i>
+                  </div>
+                  <h4 class="font-cormorant text-xl sm:text-2xl font-bold leading-tight mb-1">Performance &amp; ROAS</h4>
+                  <p class="text-[11px] text-white/75 leading-relaxed mb-3">
+                    Systematic audience segmentation, iterative creative testing, and rigorous ad budget efficiency across Meta Ads &amp; Google Ads.
+                  </p>
+
+                  <div class="p-2.5 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Average ROAS</span>
+                      <span class="text-[#C8FF00] font-bold">4.8x</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Targeting</span>
+                      <span class="font-semibold">Lookalike &amp; Custom</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Platform</span>
+                      <span class="font-semibold">Meta Business Suite</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center text-[9px] font-mono text-white/50 uppercase tracking-widest pb-1">
+                  Keep Scrolling for Pillar 02 &darr;
+                </div>
+              </div>
+
+              <!-- ==================== SCREEN 2: PILLAR II - CONTENT ARCHITECTURE ==================== -->
+              <div id="screen-2" class="phone-screen-view bg-gradient-to-b from-[#33132B] to-[#110912] text-white">
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <button onclick="switchPhoneScreen(0)" class="text-[10px] text-pink-300 flex items-center gap-1 font-semibold">
+                      <i class="fa-solid fa-chevron-left text-[8px]"></i> Apps
+                    </button>
+                    <span class="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 text-[8px] font-mono uppercase">Pillar 02 / 04</span>
+                  </div>
+
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 flex items-center justify-center text-base mb-2 shadow-lg">
+                    <i class="fa-brands fa-instagram"></i>
+                  </div>
+                  <h4 class="font-cormorant text-xl sm:text-2xl font-bold leading-tight mb-1">Content Architecture</h4>
+                  <p class="text-[11px] text-white/75 leading-relaxed mb-3">
+                    30-day comprehensive content calendars, dynamic video storyboarding, high-engagement copywriting, and aesthetic curation.
+                  </p>
+
+                  <div class="p-2.5 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Impressions</span>
+                      <span class="text-[#C8FF00] font-bold">71,941+</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Creative Suite</span>
+                      <span class="font-semibold">Canva Pro &amp; CapCut</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Deliverables</span>
+                      <span class="font-semibold">Reels, Carousels, Copy</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center text-[9px] font-mono text-white/50 uppercase tracking-widest pb-1">
+                  Keep Scrolling for Pillar 03 &darr;
+                </div>
+              </div>
+
+              <!-- ==================== SCREEN 3: PILLAR III - SEARCH VISIBILITY (SEO) ==================== -->
+              <div id="screen-3" class="phone-screen-view bg-gradient-to-b from-[#0D2E26] to-[#081210] text-white">
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <button onclick="switchPhoneScreen(0)" class="text-[10px] text-emerald-300 flex items-center gap-1 font-semibold">
+                      <i class="fa-solid fa-chevron-left text-[8px]"></i> Apps
+                    </button>
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[8px] font-mono uppercase">Pillar 03 / 04</span>
+                  </div>
+
+                  <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-base mb-2 shadow-lg">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                  </div>
+                  <h4 class="font-cormorant text-xl sm:text-2xl font-bold leading-tight mb-1">Search Visibility (SEO)</h4>
+                  <p class="text-[11px] text-white/75 leading-relaxed mb-3">
+                    Targeted keyword intelligence, on-page optimization, Google Search Console indexing, and organic growth architecture.
+                  </p>
+
+                  <div class="p-2.5 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Organic Lift</span>
+                      <span class="text-[#C8FF00] font-bold">+185%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Audit Tools</span>
+                      <span class="font-semibold">SEMrush &amp; Ubersuggest</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">CMS &amp; Crawl</span>
+                      <span class="font-semibold">WordPress &amp; GSC</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center text-[9px] font-mono text-white/50 uppercase tracking-widest pb-1">
+                  Keep Scrolling for Pillar 04 &darr;
+                </div>
+              </div>
+
+              <!-- ==================== SCREEN 4: PILLAR IV - CLIENT MANAGEMENT ==================== -->
+              <div id="screen-4" class="phone-screen-view bg-gradient-to-b from-[#17253B] to-[#0B101A] text-white">
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <button onclick="switchPhoneScreen(0)" class="text-[10px] text-sky-300 flex items-center gap-1 font-semibold">
+                      <i class="fa-solid fa-chevron-left text-[8px]"></i> Apps
+                    </button>
+                    <span class="px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 text-[8px] font-mono uppercase">Pillar 04 / 04</span>
+                  </div>
+
+                  <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-base mb-2 shadow-lg">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                  </div>
+                  <h4 class="font-cormorant text-xl sm:text-2xl font-bold leading-tight mb-1">Client Management</h4>
+                  <p class="text-[11px] text-white/75 leading-relaxed mb-3">
+                    Clear client stakeholder alignment, data-transparent executive reporting, and cross-functional brand strategy execution.
+                  </p>
+
+                  <div class="p-2.5 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Active Accounts</span>
+                      <span class="text-[#C8FF00] font-bold">12+ Industries</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Retention</span>
+                      <span class="font-semibold">LinkedIn &amp; Email</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                      <span class="text-white/70">Cadence</span>
+                      <span class="font-semibold">Weekly &amp; Monthly KPI</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="py-1.5 px-2.5 rounded-lg bg-[#C8FF00] text-[#111111] text-center text-[9px] font-extrabold uppercase tracking-wider mb-1">
+                  All 4 Pillars Complete &bull; Next: Career Journey &darr;
+                </div>
+              </div>
+
+              <!-- Authentic iPhone Bottom Home Bar -->
+              <div class="iphone-home-indicator"></div>
+
+            </div>
+          </div>
+
+          <!-- Progress Track & Stepper Dots Below Full Phone -->
+          <div class="w-52 h-1 bg-current/15 rounded-full overflow-hidden mt-3">
+            <div id="pinProgressBar" class="h-full theme-accent-bg transition-all duration-150" style="width: 0%;"></div>
+          </div>
+          <div class="flex items-center gap-2 mt-2">
+            <button onclick="switchPhoneScreen(0)" data-dot="0" class="phone-dot w-6 h-1.5 rounded-full theme-accent-bg transition-all" title="App Home"></button>
+            <button onclick="switchPhoneScreen(1)" data-dot="1" class="phone-dot w-2 h-1.5 rounded-full bg-current opacity-30 transition-all" title="Pillar 1: Meta Ads"></button>
+            <button onclick="switchPhoneScreen(2)" data-dot="2" class="phone-dot w-2 h-1.5 rounded-full bg-current opacity-30 transition-all" title="Pillar 2: Content"></button>
+            <button onclick="switchPhoneScreen(3)" data-dot="3" class="phone-dot w-2 h-1.5 rounded-full bg-current opacity-30 transition-all" title="Pillar 3: SEO"></button>
+            <button onclick="switchPhoneScreen(4)" data-dot="4" class="phone-dot w-2 h-1.5 rounded-full bg-current opacity-30 transition-all" title="Pillar 4: Clients"></button>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE CALLOUTS (Desktop) -->
+        <div class="hidden lg:flex flex-col justify-between h-[430px] w-64 z-20 ml-8">
+          
+          <!-- Callout 2: Content Architecture -->
+          <button onclick="switchPhoneScreen(2)" data-callout="2" class="callout-badge text-left p-4 rounded-2xl border theme-border theme-bg-card shadow-md">
+            <div class="flex items-center gap-3 mb-1">
+              <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 text-white flex items-center justify-center text-sm shadow-sm">
+                <i class="fa-brands fa-instagram"></i>
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-widest font-bold opacity-60">Pillar 02</span>
+            </div>
+            <div class="font-cormorant text-xl font-bold leading-tight">Content Architecture</div>
+            <div class="callout-sub text-[11px] theme-text-secondary mt-0.5">Instagram, Canva &amp; CapCut</div>
+          </button>
+
+          <!-- Callout 4: Client Management -->
+          <button onclick="switchPhoneScreen(4)" data-callout="4" class="callout-badge text-left p-4 rounded-2xl border theme-border theme-bg-card shadow-md">
+            <div class="flex items-center gap-3 mb-1">
+              <span class="w-8 h-8 rounded-xl bg-sky-600 text-white flex items-center justify-center text-sm shadow-sm">
+                <i class="fa-brands fa-linkedin-in"></i>
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-widest font-bold opacity-60">Pillar 04</span>
+            </div>
+            <div class="font-cormorant text-xl font-bold leading-tight">Client Management</div>
+            <div class="callout-sub text-[11px] theme-text-secondary mt-0.5">LinkedIn &amp; Executive KPIs</div>
+          </button>
+
+        </div>
+
+        <!-- MOBILE & TABLET COMPACT CALLOUT PILLS -->
+        <div class="grid grid-cols-2 gap-2 w-full max-w-md mt-3 lg:hidden">
+          <button onclick="switchPhoneScreen(1)" data-callout="1" class="callout-badge text-left p-2 rounded-xl border theme-border theme-bg-card shadow-sm flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-brands fa-meta"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="font-cormorant text-sm font-bold leading-tight truncate">01. Meta Ads</div>
+            </div>
+          </button>
+
+          <button onclick="switchPhoneScreen(2)" data-callout="2" class="callout-badge text-left p-2 rounded-xl border theme-border theme-bg-card shadow-sm flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 text-white flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-brands fa-instagram"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="font-cormorant text-sm font-bold leading-tight truncate">02. Content</div>
+            </div>
+          </button>
+
+          <button onclick="switchPhoneScreen(3)" data-callout="3" class="callout-badge text-left p-2 rounded-xl border theme-border theme-bg-card shadow-sm flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-brands fa-google"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="font-cormorant text-sm font-bold leading-tight truncate">03. Search SEO</div>
+            </div>
+          </button>
+
+          <button onclick="switchPhoneScreen(4)" data-callout="4" class="callout-badge text-left p-2 rounded-xl border theme-border theme-bg-card shadow-sm flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-sky-600 text-white flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="font-cormorant text-sm font-bold leading-tight truncate">04. Clients</div>
+            </div>
+          </button>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <!-- ==================== 3. WORK EXPERIENCE ==================== -->
-  <section id="experience" class="py-20 md:py-32 bg-[#E5DFD5] hairline-t hairline-b">
+  <!-- ==================== 3. THE WALKING CAREER JOURNEY (WORK EXPERIENCE) ==================== -->
+  <section id="experience" class="py-24 md:py-36 theme-bg-secondary border-y theme-border relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 md:px-12">
       
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 relative z-20">
         <div>
-          <span class="font-mono text-xs uppercase tracking-[0.25em] text-[#111111]/60 font-bold block mb-2">02 / CAREER PATH</span>
-          <h2 class="font-serif-display text-4xl sm:text-6xl text-[#111111] uppercase tracking-tight">
+          <span class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] theme-text-muted font-bold mb-2">
+            <span class="w-2 h-2 rounded-full theme-accent-bg"></span>
+            02 / THE WALKING CAREER JOURNEY
+          </span>
+          <h2 class="font-serif-display text-4xl sm:text-6xl theme-text-primary uppercase tracking-tight">
             Work Experience
           </h2>
         </div>
-        <p class="mt-4 md:mt-0 text-xs font-sans uppercase tracking-[0.2em] text-[#111111]/70 font-bold">
-          Hands-on Execution &amp; Strategic Growth
+        <p class="mt-4 md:mt-0 text-xs font-sans uppercase tracking-[0.2em] theme-text-secondary font-bold">
+          Scroll to Walk Through Each Career Milestone
         </p>
       </div>
 
-      <div class="space-y-6">
+      <!-- CURVED WINDING PATH + ANIMATED WALKING CHARACTER + EXPERIENCE CARDS -->
+      <div id="careerJourneyWrapper" class="relative">
+        
+        <!-- Winding SVG Curved Path (Desktop Center Track) -->
+        <svg id="careerPathSvg" class="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-[360px] h-full pointer-events-none z-10 overflow-visible" viewBox="0 0 360 1500" preserveAspectRatio="none">
+          <!-- Background Subtle Dashed Curve -->
+          <path 
+            id="careerGuidePath"
+            d="M 180,20 C 330,190 330,360 180,500 C 30,640 30,830 180,980 C 330,1130 330,1310 180,1470" 
+            fill="none" 
+            stroke="var(--line-stroke)" 
+            stroke-width="2.5" 
+            stroke-dasharray="7 7"
+          />
+          <!-- Highlight Active Solid Progress Stroke -->
+          <path 
+            id="careerProgressPath"
+            d="M 180,20 C 330,190 330,360 180,500 C 30,640 30,830 180,980 C 330,1130 330,1310 180,1470" 
+            fill="none" 
+            stroke="var(--accent)" 
+            stroke-width="4" 
+            stroke-linecap="round"
+          />
+        </svg>
 
-        <!-- Role 1: SEO WebPlanet Solutions -->
-        <div class="bg-white rounded-2xl border border-[#111111]/20 p-8 md:p-10 shadow-sm hover:shadow-md transition-all">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div class="lg:col-span-4">
-              <span class="inline-block px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest bg-[#C8FF00] text-[#111111] font-bold mb-3 border border-[#111111]/20">
-                05/2026 – Present
-              </span>
-              <h3 class="font-cormorant text-3xl text-[#111111] font-bold">SEO WebPlanet Solutions</h3>
-              <p class="text-xs uppercase tracking-widest text-[#111111]/80 font-bold mt-1">Social Media Executive</p>
-            </div>
-            
-            <div class="lg:col-span-8 space-y-4">
-              <ul class="space-y-2.5 text-sm text-[#111111] font-normal leading-relaxed">
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+        <!-- Vertical Mobile Track Line (Mobile & Tablet) -->
+        <div class="lg:hidden absolute top-4 bottom-4 left-5 w-0.5 border-l-2 border-dashed theme-border z-10"></div>
+
+        <!-- ANIMATED WALKING CHARACTER (Follows the curved path as user scrolls!) -->
+        <div id="journeyWalker" class="hidden lg:flex flex-col items-center justify-center absolute top-0 left-0 z-30 pointer-events-none -translate-x-1/2 -translate-y-1/2">
+          <!-- Floating Location Tag above Character -->
+          <div class="px-2.5 py-0.5 rounded-full theme-accent-bg text-[9px] font-mono font-extrabold uppercase tracking-wider shadow-md mb-1 whitespace-nowrap border border-black/20">
+            Kashish
+          </div>
+          <!-- Miniature Animated Walking Character SVG -->
+          <div id="walkerSprite" class="w-14 h-16 drop-shadow-xl">
+            <svg viewBox="0 0 50 64" class="w-full h-full overflow-visible">
+              <!-- Ground Shadow -->
+              <ellipse cx="25" cy="61" rx="11" ry="3" fill="rgba(0,0,0,0.22)" />
+              <g class="walker-body-bob">
+                <!-- Left Leg (Back/Front Swing) -->
+                <g class="walker-leg-left">
+                  <rect x="21" y="38" width="4.5" height="19" rx="2.2" fill="#1E2025" />
+                  <path d="M20 56 h7 a2 2 0 0 1 2 2 v1 h-9 z" fill="#111111" />
+                </g>
+                <!-- Right Leg (Opposite Swing) -->
+                <g class="walker-leg-right">
+                  <rect x="25.5" y="38" width="4.5" height="19" rx="2.2" fill="#2A2D34" />
+                  <path d="M24.5 56 h7 a2 2 0 0 1 2 2 v1 h-9 z" fill="#111111" />
+                </g>
+                <!-- Long Dark Hair Back -->
+                <path d="M18 12 C15 18 15 28 18 33 L32 33 C35 28 35 18 32 12 Z" fill="#1F1B1A" />
+                <!-- Tailored Dark Blazer Torso -->
+                <path d="M18 21 L32 21 L34 40 L16 40 Z" rx="3" fill="#23262E" />
+                <!-- Crisp White Shirt Collar V-Neck -->
+                <polygon points="22,21 28,21 25,31" fill="#F8F9FA" />
+                <!-- Head -->
+                <circle cx="25" cy="13" r="6.5" fill="#E8B89A" />
+                <!-- Hair Front Parting -->
+                <path d="M18.5 12 C19 6 31 6 31.5 12 C30 9 20 9 18.5 12 Z" fill="#1F1B1A" />
+                <!-- Left Arm -->
+                <g class="walker-arm-left">
+                  <rect x="14.5" y="22" width="3.8" height="15" rx="1.9" fill="#1B1D24" />
+                  <circle cx="16.4" cy="37.5" r="1.8" fill="#E8B89A" />
+                </g>
+                <!-- Right Arm -->
+                <g class="walker-arm-right">
+                  <rect x="31.7" y="22" width="3.8" height="15" rx="1.9" fill="#2D313B" />
+                  <circle cx="33.6" cy="37.5" r="1.8" fill="#E8B89A" />
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- EXPERIENCE MILESTONE CARDS (4 Stops Along the Curved Path) -->
+        <div class="space-y-16 lg:space-y-24 relative z-20">
+
+          <!-- MILESTONE 1 (Left Side on Desktop): SEO WebPlanet Solutions -->
+          <div class="journey-milestone grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pl-12 lg:pl-0">
+            <div class="lg:col-span-5 theme-bg-card rounded-3xl border-2 theme-border p-7 sm:p-9 shadow-lg hover:shadow-xl transition-all relative">
+              <!-- Mobile Dot -->
+              <span class="lg:hidden milestone-node-dot absolute -left-[35px] top-8 w-4 h-4 rounded-full bg-white border-2 border-[#111111]"></span>
+              
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest theme-accent-bg font-bold">
+                  05/2026 – Present
+                </span>
+                <span class="font-mono text-xs font-bold theme-text-muted">Stop 01</span>
+              </div>
+              <h3 class="font-cormorant text-3xl theme-text-primary font-bold">SEO WebPlanet Solutions</h3>
+              <p class="text-xs uppercase tracking-widest theme-text-secondary font-bold mt-1 mb-4">Social Media Executive</p>
+              
+              <ul class="space-y-2 text-sm theme-text-primary font-normal leading-relaxed mb-5">
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Manage and maintain social media accounts for multiple clients across different industries.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Brainstorm new content concepts, creative ideas, and engagement strategies to improve brand presence.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Develop monthly content calendars based on client requirements, brand identity, current trends, and marketing objectives.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Work on Meta Ads, including campaign setup, audience targeting, and monitoring campaign performance.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Prepare performance reports and share insights to improve campaign effectiveness.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Learned and applied fundamentals of SEO and SMM.</span>
                 </li>
               </ul>
-              
-              <div class="pt-4 flex flex-wrap gap-2">
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Meta Business Suite</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Content Calendars</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Campaign Targeting</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">SEO &amp; SMM</span>
+
+              <div class="flex flex-wrap gap-1.5 pt-3 border-t theme-border">
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Meta Business Suite</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Content Calendars</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">SEO &amp; SMM</span>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Role 2: Vadodara Globelectra -->
-        <div class="bg-white rounded-2xl border border-[#111111]/20 p-8 md:p-10 shadow-sm hover:shadow-md transition-all">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div class="lg:col-span-4">
-              <span class="inline-block px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest bg-[#111111]/10 text-[#111111] font-bold mb-3 border border-[#111111]/20">
-                10/2025 – 12/2025
-              </span>
-              <h3 class="font-cormorant text-3xl text-[#111111] font-bold">Vadodara Globelectra</h3>
-              <p class="text-xs uppercase tracking-widest text-[#111111]/80 font-bold mt-1">Digital Marketing Intern</p>
+            <!-- Center Path Checkpoint Node (Desktop) -->
+            <div class="hidden lg:flex lg:col-span-2 justify-center items-center">
+              <div class="milestone-node-dot w-5 h-5 rounded-full bg-white border-2 border-[#111111] shadow-md"></div>
             </div>
-            
-            <div class="lg:col-span-8 space-y-4">
-              <ul class="space-y-2.5 text-sm text-[#111111] font-normal leading-relaxed">
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+
+            <div class="hidden lg:block lg:col-span-5"></div>
+          </div>
+
+          <!-- MILESTONE 2 (Right Side on Desktop): Vadodara Globelectra -->
+          <div class="journey-milestone grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pl-12 lg:pl-0">
+            <div class="hidden lg:block lg:col-span-5"></div>
+
+            <!-- Center Path Checkpoint Node (Desktop) -->
+            <div class="hidden lg:flex lg:col-span-2 justify-center items-center">
+              <div class="milestone-node-dot w-5 h-5 rounded-full bg-white border-2 border-[#111111] shadow-md"></div>
+            </div>
+
+            <div class="lg:col-span-5 theme-bg-card rounded-3xl border-2 theme-border p-7 sm:p-9 shadow-lg hover:shadow-xl transition-all relative">
+              <!-- Mobile Dot -->
+              <span class="lg:hidden milestone-node-dot absolute -left-[35px] top-8 w-4 h-4 rounded-full bg-white border-2 border-[#111111]"></span>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest theme-bg-secondary theme-text-primary font-bold border theme-border">
+                  10/2025 – 12/2025
+                </span>
+                <span class="font-mono text-xs font-bold theme-text-muted">Stop 02</span>
+              </div>
+              <h3 class="font-cormorant text-3xl theme-text-primary font-bold">Vadodara Globelectra</h3>
+              <p class="text-xs uppercase tracking-widest theme-text-secondary font-bold mt-1 mb-4">Digital Marketing Intern</p>
+              
+              <ul class="space-y-2 text-sm theme-text-primary font-normal leading-relaxed mb-5">
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Planned and executed social media marketing strategies to increase brand awareness and engagement.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Managed and optimized paid ad campaigns (Meta Ads/Google Ads) to drive traffic and generate leads.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Created engaging content (posts, captions, creatives) aligned with brand positioning.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Analyzed campaign performance using insights and metrics to improve ROI and reach.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Conducted audience targeting and segmentation for better ad performance.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Handled social media platforms and maintained consistent brand communication.</span>
                 </li>
               </ul>
-              <div class="pt-4 flex flex-wrap gap-2">
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Meta &amp; Google Ads</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Lead Gen</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Audience Segmentation</span>
+
+              <div class="flex flex-wrap gap-1.5 pt-3 border-t theme-border">
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Meta &amp; Google Ads</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Lead Gen</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Audience Segmentation</span>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Role 3: MotionGility, Indore -->
-        <div class="bg-white rounded-2xl border border-[#111111]/20 p-8 md:p-10 shadow-sm hover:shadow-md transition-all">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div class="lg:col-span-4">
-              <span class="inline-block px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest bg-[#111111]/10 text-[#111111] font-bold mb-3 border border-[#111111]/20">
-                05/2025 – 06/2025
-              </span>
-              <h3 class="font-cormorant text-3xl text-[#111111] font-bold">MotionGility, Indore</h3>
-              <p class="text-xs uppercase tracking-widest text-[#111111]/80 font-bold mt-1">Digital Marketing Intern</p>
-            </div>
-            
-            <div class="lg:col-span-8 space-y-4">
-              <ul class="space-y-2.5 text-sm text-[#111111] font-normal leading-relaxed">
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+          <!-- MILESTONE 3 (Left Side on Desktop): MotionGility, Indore -->
+          <div class="journey-milestone grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pl-12 lg:pl-0">
+            <div class="lg:col-span-5 theme-bg-card rounded-3xl border-2 theme-border p-7 sm:p-9 shadow-lg hover:shadow-xl transition-all relative">
+              <!-- Mobile Dot -->
+              <span class="lg:hidden milestone-node-dot absolute -left-[35px] top-8 w-4 h-4 rounded-full bg-white border-2 border-[#111111]"></span>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest theme-bg-secondary theme-text-primary font-bold border theme-border">
+                  05/2025 – 06/2025
+                </span>
+                <span class="font-mono text-xs font-bold theme-text-muted">Stop 03</span>
+              </div>
+              <h3 class="font-cormorant text-3xl theme-text-primary font-bold">MotionGility, Indore</h3>
+              <p class="text-xs uppercase tracking-widest theme-text-secondary font-bold mt-1 mb-4">Digital Marketing Intern</p>
+              
+              <ul class="space-y-2 text-sm theme-text-primary font-normal leading-relaxed mb-5">
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Supported the team in basic content creation, including captions and creatives.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Helped in running and monitoring digital marketing campaigns.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Conducted basic research on audience preferences and market trends.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Assisted in tracking performance metrics like engagement, reach, and clicks.</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="text-[#111111] font-black text-base leading-none mt-1">―</span>
+                <li class="flex items-start gap-2.5">
+                  <span class="font-black mt-0.5">―</span>
                   <span>Learned and applied fundamentals of SEO and social media marketing.</span>
                 </li>
               </ul>
-              <div class="pt-4 flex flex-wrap gap-2">
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Content Creation</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Market Research</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Metrics Tracking</span>
+
+              <div class="flex flex-wrap gap-1.5 pt-3 border-t theme-border">
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Content Creation</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Market Research</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Metrics Tracking</span>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Role 4: Launched Global, Bengaluru -->
-        <div class="bg-white rounded-2xl border border-[#111111]/20 p-8 md:p-10 shadow-sm hover:shadow-md transition-all">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div class="lg:col-span-4">
-              <span class="inline-block px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest bg-[#111111]/10 text-[#111111] font-bold mb-3 border border-[#111111]/20">
-                02/2025 – 06/2025
-              </span>
-              <h3 class="font-cormorant text-3xl text-[#111111] font-bold">Launched Global, Bengaluru</h3>
-              <p class="text-xs uppercase tracking-widest text-[#111111]/80 font-bold mt-1">Marketing Intern</p>
+            <!-- Center Path Checkpoint Node (Desktop) -->
+            <div class="hidden lg:flex lg:col-span-2 justify-center items-center">
+              <div class="milestone-node-dot w-5 h-5 rounded-full bg-white border-2 border-[#111111] shadow-md"></div>
             </div>
-            
-            <div class="lg:col-span-8 space-y-4">
-              <p class="text-sm text-[#111111] font-normal leading-relaxed">
+
+            <div class="hidden lg:block lg:col-span-5"></div>
+          </div>
+
+          <!-- MILESTONE 4 (Right Side on Desktop): Launched Global, Bengaluru -->
+          <div class="journey-milestone grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pl-12 lg:pl-0">
+            <div class="hidden lg:block lg:col-span-5"></div>
+
+            <!-- Center Path Checkpoint Node (Desktop) -->
+            <div class="hidden lg:flex lg:col-span-2 justify-center items-center">
+              <div class="milestone-node-dot w-5 h-5 rounded-full bg-white border-2 border-[#111111] shadow-md"></div>
+            </div>
+
+            <div class="lg:col-span-5 theme-bg-card rounded-3xl border-2 theme-border p-7 sm:p-9 shadow-lg hover:shadow-xl transition-all relative">
+              <!-- Mobile Dot -->
+              <span class="lg:hidden milestone-node-dot absolute -left-[35px] top-8 w-4 h-4 rounded-full bg-white border-2 border-[#111111]"></span>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest theme-bg-secondary theme-text-primary font-bold border theme-border">
+                  02/2025 – 06/2025
+                </span>
+                <span class="font-mono text-xs font-bold theme-text-muted">Stop 04</span>
+              </div>
+              <h3 class="font-cormorant text-3xl theme-text-primary font-bold">Launched Global, Bengaluru</h3>
+              <p class="text-xs uppercase tracking-widest theme-text-secondary font-bold mt-1 mb-4">Marketing Intern</p>
+              
+              <p class="text-sm theme-text-primary font-normal leading-relaxed mb-5">
                 Completed a training and internship program at Launched Global, gaining hands-on experience in skill development and career growth.
               </p>
-              <div class="pt-2 flex flex-wrap gap-2">
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Skill Mastery</span>
-                <span class="px-3 py-1 text-[11px] font-mono bg-[#EDE8E1] rounded-md text-[#111111] font-bold">Career Growth</span>
+
+              <div class="flex flex-wrap gap-1.5 pt-3 border-t theme-border">
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Skill Mastery</span>
+                <span class="px-2.5 py-1 text-[10px] font-mono theme-bg-secondary rounded-md theme-text-primary font-bold">Career Growth</span>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
 
     </div>
@@ -630,12 +1411,12 @@
   <section id="academics" class="py-20 md:py-32 max-w-7xl mx-auto px-6 md:px-12">
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
       <div>
-        <span class="font-mono text-xs uppercase tracking-[0.25em] text-[#111111]/60 font-bold block mb-2">03 / FOUNDATIONS</span>
-        <h2 class="font-serif-display text-4xl sm:text-6xl text-[#111111] uppercase tracking-tight">
+        <span class="font-mono text-xs uppercase tracking-[0.25em] theme-text-muted font-bold block mb-2">03 / FOUNDATIONS</span>
+        <h2 class="font-serif-display text-4xl sm:text-6xl theme-text-primary uppercase tracking-tight">
           Academic Profile
         </h2>
       </div>
-      <p class="mt-4 md:mt-0 text-xs font-sans uppercase tracking-[0.2em] text-[#111111]/70 font-bold">
+      <p class="mt-4 md:mt-0 text-xs font-sans uppercase tracking-[0.2em] theme-text-secondary font-bold">
         Commerce Foundations &amp; Advanced Management
       </p>
     </div>
@@ -643,36 +1424,36 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       
       <!-- Degree 1: Parul University -->
-      <div class="p-8 md:p-12 rounded-3xl border-2 border-[#111111]/20 bg-white flex flex-col justify-between relative shadow-md">
-        <div class="absolute top-8 right-8 w-12 h-12 rounded-full border border-[#111111]/30 flex items-center justify-center font-mono text-sm font-bold text-[#111111] bg-[#C8FF00]">
+      <div class="p-8 md:p-12 rounded-3xl border-2 theme-border theme-bg-card flex flex-col justify-between relative shadow-md">
+        <div class="absolute top-8 right-8 w-12 h-12 rounded-full border theme-border flex items-center justify-center font-mono text-sm font-bold theme-accent-bg">
           01
         </div>
         <div>
-          <span class="font-mono text-xs uppercase tracking-widest text-[#111111]/70 font-black mb-3 block">2026</span>
-          <h3 class="font-cormorant text-3xl sm:text-4xl text-[#111111] font-bold mb-2">Master of Business Administration (M.B.A.)</h3>
-          <p class="text-sm font-bold tracking-wider text-[#111111]/80 uppercase mb-4">Specialization in Digital Marketing</p>
-          <p class="text-base text-[#111111] font-medium mb-6">Parul University, Vadodara</p>
+          <span class="font-mono text-xs uppercase tracking-widest theme-text-muted font-black mb-3 block">2026</span>
+          <h3 class="font-cormorant text-3xl sm:text-4xl theme-text-primary font-bold mb-2">Master of Business Administration (M.B.A.)</h3>
+          <p class="text-sm font-bold tracking-wider theme-text-secondary uppercase mb-4">Specialization in Digital Marketing</p>
+          <p class="text-base theme-text-primary font-medium mb-6">Parul University, Vadodara</p>
         </div>
-        <div class="pt-6 border-t border-[#111111]/15 flex items-baseline justify-between">
-          <span class="text-xs uppercase tracking-widest text-[#111111]/70 font-bold">Graduation Cumulative</span>
-          <span class="font-cormorant text-4xl font-black text-[#111111]">8 <span class="text-sm font-sans font-bold text-[#111111]/70">CGPA</span></span>
+        <div class="pt-6 border-t theme-border flex items-baseline justify-between">
+          <span class="text-xs uppercase tracking-widest theme-text-muted font-bold">Graduation Cumulative</span>
+          <span class="font-cormorant text-4xl font-black theme-text-primary">8 <span class="text-sm font-sans font-bold theme-text-muted">CGPA</span></span>
         </div>
       </div>
 
       <!-- Degree 2: M.K.H.S Gujarati College -->
-      <div class="p-8 md:p-12 rounded-3xl border-2 border-[#111111]/20 bg-white flex flex-col justify-between relative shadow-md">
-        <div class="absolute top-8 right-8 w-12 h-12 rounded-full border border-[#111111]/30 flex items-center justify-center font-mono text-sm font-bold text-[#111111] bg-[#C8FF00]">
+      <div class="p-8 md:p-12 rounded-3xl border-2 theme-border theme-bg-card flex flex-col justify-between relative shadow-md">
+        <div class="absolute top-8 right-8 w-12 h-12 rounded-full border theme-border flex items-center justify-center font-mono text-sm font-bold theme-accent-bg">
           02
         </div>
         <div>
-          <span class="font-mono text-xs uppercase tracking-widest text-[#111111]/70 font-black mb-3 block">2021</span>
-          <h3 class="font-cormorant text-3xl sm:text-4xl text-[#111111] font-bold mb-2">Bachelor of Commerce (B.Com.)</h3>
-          <p class="text-sm font-bold tracking-wider text-[#111111]/80 uppercase mb-4">Commerce &amp; Economics</p>
-          <p class="text-base text-[#111111] font-medium mb-6">M.K.H.S Gujarati College, Indore</p>
+          <span class="font-mono text-xs uppercase tracking-widest theme-text-muted font-black mb-3 block">2021</span>
+          <h3 class="font-cormorant text-3xl sm:text-4xl theme-text-primary font-bold mb-2">Bachelor of Commerce (B.Com.)</h3>
+          <p class="text-sm font-bold tracking-wider theme-text-secondary uppercase mb-4">Commerce &amp; Economics</p>
+          <p class="text-base theme-text-primary font-medium mb-6">M.K.H.S Gujarati College, Indore</p>
         </div>
-        <div class="pt-6 border-t border-[#111111]/15 flex items-baseline justify-between">
-          <span class="text-xs uppercase tracking-widest text-[#111111]/70 font-bold">Graduation Cumulative</span>
-          <span class="font-cormorant text-4xl font-black text-[#111111]">7.8 <span class="text-sm font-sans font-bold text-[#111111]/70">CGPA</span></span>
+        <div class="pt-6 border-t theme-border flex items-baseline justify-between">
+          <span class="text-xs uppercase tracking-widest theme-text-muted font-bold">Graduation Cumulative</span>
+          <span class="font-cormorant text-4xl font-black theme-text-primary">7.8 <span class="text-sm font-sans font-bold theme-text-muted">CGPA</span></span>
         </div>
       </div>
 
@@ -680,12 +1461,12 @@
   </section>
 
   <!-- ==================== 5. SKILLS & EXPERTISE ==================== -->
-  <section id="skills" class="py-20 md:py-32 bg-[#111111] text-[#F7F6F2] hairline-t">
+  <section id="skills" class="py-20 md:py-32 theme-bg-dark text-[#F7F6F2] border-t theme-border">
     <div class="max-w-7xl mx-auto px-6 md:px-12">
       
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
         <div>
-          <span class="font-mono text-xs uppercase tracking-[0.25em] text-[#C8FF00] font-bold block mb-2">04 / CAPABILITIES</span>
+          <span class="font-mono text-xs uppercase tracking-[0.25em] theme-accent-text font-bold block mb-2">04 / CAPABILITIES</span>
           <h2 class="font-serif-display text-4xl sm:text-6xl text-white uppercase tracking-tight">
             Skills &amp; Expertise
           </h2>
@@ -698,118 +1479,105 @@
       <!-- Skills Matrix Grid -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
 
-        <!-- 1. SMM -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-bullhorn text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Social Media Marketing</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">SMM</p>
         </div>
 
-        <!-- 2. Canva -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-palette text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Canva</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Visual Creatives</p>
         </div>
 
-        <!-- 3. CapCut -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-video text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">CapCut</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Video Editing</p>
         </div>
 
-        <!-- 4. SEO -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-magnifying-glass-chart text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">SEO</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Search Engine Optimization</p>
         </div>
 
-        <!-- 5. Google Search Console -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-brands fa-google text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Google Search Console</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Indexing &amp; Crawl</p>
         </div>
 
-        <!-- 6. WordPress -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-brands fa-wordpress text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">WordPress</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">CMS Operations</p>
         </div>
 
-        <!-- 7. Ubersuggest -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-chart-line text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Ubersuggest</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Keyword Insights</p>
         </div>
 
-        <!-- 8. Meta Business Suite -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-brands fa-meta text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Meta Business Suite</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Ads &amp; Campaign Mgmt</p>
         </div>
 
-        <!-- 9. Content Writing -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-pen-nib text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Content Writing</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Copywriting &amp; Posts</p>
         </div>
 
-        <!-- 10. Email Marketing -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-envelope-open-text text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Email Marketing</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Audience Retention</p>
         </div>
 
-        <!-- 11. LinkedIn -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-brands fa-linkedin text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">LinkedIn</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Brand Positioning</p>
         </div>
 
-        <!-- 12. Google Keyword Planner -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group">
-          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 text-[#C8FF00] group-hover:scale-110 transition-transform">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4 theme-accent-text group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-key text-base"></i>
           </div>
           <h3 class="font-sans text-base font-bold text-white mb-1">Google Keyword Planner</h3>
           <p class="text-[11px] font-mono text-white/60 uppercase tracking-widest font-semibold">Search Volume Analysis</p>
         </div>
 
-        <!-- 13. SEMrush -->
-        <div class="p-6 rounded-xl border border-white/20 bg-[#1A1A1A] hover:border-[#C8FF00] transition-all group sm:col-span-2 lg:col-span-4">
+        <div class="p-6 rounded-xl border border-white/20 bg-white/5 hover:border-current transition-all group sm:col-span-2 lg:col-span-4">
           <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-[#C8FF00] group-hover:scale-110 transition-transform">
+            <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center theme-accent-text group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-chart-pie text-base"></i>
             </div>
             <div>
@@ -825,16 +1593,16 @@
   </section>
 
   <!-- ==================== 6. CONTACT SECTION ==================== -->
-  <section id="contact" class="py-24 md:py-36 bg-[#EDE8E2] relative overflow-hidden">
+  <section id="contact" class="py-24 md:py-36 theme-bg-primary relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 md:px-12">
       
       <div class="mb-14 md:mb-20">
-        <span class="font-mono text-xs uppercase tracking-[0.25em] text-[#111111]/60 font-bold block mb-4">05 / DIRECT CHANNEL</span>
-        <h2 class="font-serif-display text-5xl sm:text-7xl lg:text-9xl text-[#111111] tracking-tight leading-[0.95] mb-6">
+        <span class="font-mono text-xs uppercase tracking-[0.25em] theme-text-muted font-bold block mb-4">05 / DIRECT CHANNEL</span>
+        <h2 class="font-serif-display text-5xl sm:text-7xl lg:text-9xl theme-text-primary tracking-tight leading-[0.95] mb-6">
           KASHISH RATHORE <br />
           <span class="font-cormorant italic font-light">Digital Marketing Executive.</span>
         </h2>
-        <p class="text-sm md:text-base font-medium text-[#111111]/80 max-w-xl">
+        <p class="text-sm md:text-base font-medium theme-text-secondary max-w-xl">
           Looking to turn ideas into measurable results with fresh perspectives and a proactive mindset. Connect directly:
         </p>
       </div>
@@ -842,37 +1610,34 @@
       <!-- Contact Interaction Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
         
-        <!-- Email Button -->
-        <a href="mailto:kashishh0525@gmail.com" class="p-8 rounded-2xl border-2 border-[#111111]/20 bg-white hover:border-[#111111] transition-all group flex flex-col justify-between shadow-md">
+        <a href="mailto:kashishh0525@gmail.com" class="p-8 rounded-2xl border-2 theme-border theme-bg-card transition-all group flex flex-col justify-between shadow-md">
           <div>
-            <span class="text-[10px] font-mono uppercase tracking-widest text-[#111111]/60 font-bold block mb-3">Email Transmission</span>
-            <div class="font-cormorant text-2xl font-bold text-[#111111] group-hover:translate-x-1 transition-transform">kashishh0525@gmail.com</div>
+            <span class="text-[10px] font-mono uppercase tracking-widest theme-text-muted font-bold block mb-3">Email Transmission</span>
+            <div class="font-cormorant text-2xl font-bold theme-text-primary group-hover:translate-x-1 transition-transform">kashishh0525@gmail.com</div>
           </div>
-          <div class="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#111111]">
+          <div class="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest theme-text-primary">
             <span>Send Email</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
           </div>
         </a>
 
-        <!-- Phone / Call Button -->
-        <a href="tel:9755384632" class="p-8 rounded-2xl border-2 border-[#111111]/20 bg-white hover:border-[#111111] transition-all group flex flex-col justify-between shadow-md">
+        <a href="tel:9755384632" class="p-8 rounded-2xl border-2 theme-border theme-bg-card transition-all group flex flex-col justify-between shadow-md">
           <div>
-            <span class="text-[10px] font-mono uppercase tracking-widest text-[#111111]/60 font-bold block mb-3">Direct Phone Contact</span>
-            <div class="font-cormorant text-2xl font-bold text-[#111111] group-hover:translate-x-1 transition-transform">+91 9755384632</div>
+            <span class="text-[10px] font-mono uppercase tracking-widest theme-text-muted font-bold block mb-3">Direct Phone Contact</span>
+            <div class="font-cormorant text-2xl font-bold theme-text-primary group-hover:translate-x-1 transition-transform">+91 9755384632</div>
           </div>
-          <div class="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#111111]">
+          <div class="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest theme-text-primary">
             <span>Call Now</span>
             <i class="fa-solid fa-phone text-[10px]"></i>
           </div>
         </a>
 
-        <!-- Download Resume Trigger -->
-        <div id="resumeDownloadTrigger" class="cursor-pointer p-8 rounded-2xl border-2 border-[#111111] bg-[#C8FF00] hover:bg-[#b0e300] transition-all group flex flex-col justify-between shadow-md">
+        <div id="resumeDownloadTrigger" class="cursor-pointer p-8 rounded-2xl border-2 theme-border theme-accent-bg transition-all group flex flex-col justify-between shadow-md hover:opacity-90">
           <div>
-            <span class="text-[10px] font-mono uppercase tracking-widest text-[#111111]/70 font-bold block mb-3">Curriculum Vitae</span>
-            <div class="font-cormorant text-2xl font-black text-[#111111] group-hover:translate-x-1 transition-transform">Download Resume</div>
+            <span class="text-[10px] font-mono uppercase tracking-widest opacity-80 font-bold block mb-3">Curriculum Vitae</span>
+            <div class="font-cormorant text-2xl font-black group-hover:translate-x-1 transition-transform">Download Resume</div>
           </div>
-          <div class="mt-8 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#111111]">
+          <div class="mt-8 flex items-center gap-2 text-xs font-black uppercase tracking-widest">
             <span>Save PDF Document</span>
             <i class="fa-solid fa-arrow-down text-[10px]"></i>
           </div>
@@ -881,14 +1646,14 @@
       </div>
 
       <!-- Footer Metadata -->
-      <div class="pt-10 border-t border-[#111111]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs text-[#111111]/70 font-sans font-semibold">
+      <div class="pt-10 border-t theme-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs theme-text-secondary font-sans font-semibold">
         <div>
-          <span class="font-bold text-[#111111]">Kashish Rathore</span> — Vadodara, Gujarat, India
+          <span class="font-bold theme-text-primary">Kashish Rathore</span> — Vadodara, Gujarat, India
         </div>
         <div class="flex items-center gap-6">
-          <a href="mailto:kashishh0525@gmail.com" class="hover:text-[#111111] transition-colors">Email</a>
-          <a href="tel:9755384632" class="hover:text-[#111111] transition-colors">Phone</a>
-          <a href="#hero" class="hover:text-[#111111] transition-colors">Back to Top ↑</a>
+          <a href="mailto:kashishh0525@gmail.com" class="hover:opacity-100 transition-opacity">Email</a>
+          <a href="tel:9755384632" class="hover:opacity-100 transition-opacity">Phone</a>
+          <a href="#hero" class="hover:opacity-100 transition-opacity">Back to Top ↑</a>
         </div>
         <div>
           © 2026 Kashish Rathore. Editorial Portfolio.
@@ -899,8 +1664,8 @@
   </section>
 
   <!-- Notification Toast Modal -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-32 transition-transform duration-300 bg-[#111111] text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 text-xs font-sans">
-    <div class="w-8 h-8 rounded-full bg-[#C8FF00] text-[#111111] flex items-center justify-center font-bold">
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-32 transition-transform duration-300 theme-bg-dark text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 text-xs font-sans border theme-border">
+    <div class="w-8 h-8 rounded-full theme-accent-bg flex items-center justify-center font-bold">
       <i class="fa-solid fa-check text-xs"></i>
     </div>
     <div>
@@ -912,12 +1677,29 @@
 
   <!-- ==================== SCRIPT LOGIC ==================== -->
   <script>
+    /* --- 1. MULTI-COLOR THEME PALETTE CONTROLLER --- */
+    function setTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('kr_portfolio_theme', themeName);
+
+      document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+        if (btn.getAttribute('data-theme-btn') === themeName) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    const savedTheme = localStorage.getItem('kr_portfolio_theme') || 'ivory';
+    setTheme(savedTheme);
+
+    /* --- 2. HERO VIDEO & TYPEWRITER SEQUENCE --- */
     const video = document.getElementById('kashishVideo');
     const replayBtn = document.getElementById('replayBtn');
     const statusLabel = document.getElementById('statusLabel');
     const statusDot = document.getElementById('statusIndicatorDot');
 
-    // Typewriter Targets
     const typedName = document.getElementById('typedName');
     const cursorName = document.getElementById('cursorName');
     const typedDesignation = document.getElementById('typedDesignation');
@@ -926,7 +1708,6 @@
     const typedPillars = document.getElementById('typedPillars');
     const cursorPillars = document.getElementById('cursorPillars');
 
-    // Fade Targets
     const tagBadge = document.getElementById('tagBadge');
     const metaGrid = document.getElementById('metaGrid');
     const actionButtons = document.getElementById('actionButtons');
@@ -943,7 +1724,6 @@
 
     function resetHeroUI() {
       clearTypewriterTimers();
-
       typedName.textContent = '';
       typedDesignation.textContent = '';
       typedPillars.textContent = '';
@@ -955,13 +1735,10 @@
 
       tagBadge.classList.remove('fade-item-visible');
       tagBadge.classList.add('fade-item-hidden');
-
       metaGrid.classList.remove('fade-item-visible');
       metaGrid.classList.add('fade-item-hidden');
-
       actionButtons.classList.remove('fade-item-visible');
       actionButtons.classList.add('fade-item-hidden');
-
       scrollPrompt.classList.remove('fade-item-visible');
       scrollPrompt.classList.add('fade-item-hidden');
 
@@ -969,7 +1746,6 @@
       if (statusDot) statusDot.classList.add('animate-ping');
     }
 
-    // CALIBRATED SLOW & ELEGANT TYPEWRITER TIMING
     function startImmediateTypewriter() {
       if (isTypingActive) return;
       isTypingActive = true;
@@ -977,7 +1753,6 @@
       tagBadge.classList.remove('fade-item-hidden');
       tagBadge.classList.add('fade-item-visible');
 
-      // 1. Type Name: KASHISH RATHORE (95ms per character: smooth, deliberate pacing)
       const nameText = "KASHISH RATHORE";
       let nameIdx = 0;
       cursorName.classList.remove('hidden');
@@ -989,7 +1764,6 @@
           typeTimeouts.push(setTimeout(typeNameChar, 95));
         } else {
           cursorName.classList.add('hidden');
-          // 2. Unfurl bar & type designation after a relaxed breather
           designationBar.style.opacity = '1';
           cursorDesignation.classList.remove('hidden');
           typeTimeouts.push(setTimeout(startTypeDesignation, 250));
@@ -999,7 +1773,6 @@
     }
 
     function startTypeDesignation() {
-      // 2. Type Designation (75ms per character)
       const desigText = "Digital Marketing Executive";
       let desigIdx = 0;
 
@@ -1018,7 +1791,6 @@
     }
 
     function startTypePillars() {
-      // 3. Type Pillar Keywords (55ms per character)
       const pillarText = "Social Media Marketing / SEO / Meta Ads";
       let pillarIdx = 0;
 
@@ -1029,15 +1801,11 @@
           typeTimeouts.push(setTimeout(typePillarChar, 55));
         } else {
           cursorPillars.classList.add('hidden');
-
-          // 4. Staggered reveal for contact details & action buttons
           typeTimeouts.push(setTimeout(() => {
             metaGrid.classList.remove('fade-item-hidden');
             metaGrid.classList.add('fade-item-visible');
-
             actionButtons.classList.remove('fade-item-hidden');
             actionButtons.classList.add('fade-item-visible');
-
             scrollPrompt.classList.remove('fade-item-hidden');
             scrollPrompt.classList.add('fade-item-visible');
 
@@ -1051,23 +1819,16 @@
 
     function launchSequence() {
       resetHeroUI();
-
       if (video) {
-        // Fast, energetic walk cycle speed (1.45x)
         video.playbackRate = 1.45;
         video.currentTime = 0;
-
         video.play().then(() => {
           video.playbackRate = 1.45;
           startImmediateTypewriter();
-        }).catch(err => {
-          console.warn("Autoplay note:", err);
+        }).catch(() => {
           startImmediateTypewriter();
         });
-
-        video.onended = () => {
-          video.pause();
-        };
+        video.onended = () => video.pause();
       } else {
         startImmediateTypewriter();
       }
@@ -1076,7 +1837,193 @@
     if (replayBtn) replayBtn.addEventListener('click', launchSequence);
     window.addEventListener('load', launchSequence);
 
-    /* --- Resume Download Toast --- */
+    /* --- 3. INTERACTIVE SMARTPHONE SCREEN SWITCHER & PINNED SCROLL DRIVER --- */
+    let currentScreen = 0;
+    const stepLabels = [
+      "Scroll to Explore All 4 Pillars (0 / 4)",
+      "Pillar 01 / 04 — Performance & Meta Ads",
+      "Pillar 02 / 04 — Content Architecture",
+      "Pillar 03 / 04 — Search Visibility (SEO)",
+      "Pillar 04 / 04 — Client Management (Complete!)"
+    ];
+
+    function switchPhoneScreen(screenIndex) {
+      if (currentScreen === screenIndex) return;
+      currentScreen = screenIndex;
+
+      const stepIndicator = document.getElementById('stageStepIndicator');
+      if (stepIndicator && stepLabels[screenIndex]) {
+        stepIndicator.textContent = stepLabels[screenIndex];
+      }
+
+      document.querySelectorAll('.phone-screen-view').forEach((view, idx) => {
+        if (idx === screenIndex) {
+          view.classList.add('active');
+        } else {
+          view.classList.remove('active');
+        }
+      });
+
+      document.querySelectorAll('[data-callout]').forEach(btn => {
+        if (parseInt(btn.getAttribute('data-callout')) === screenIndex) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      document.querySelectorAll('[data-dot]').forEach(dot => {
+        if (parseInt(dot.getAttribute('data-dot')) === screenIndex) {
+          dot.classList.remove('w-2', 'bg-current', 'opacity-30');
+          dot.classList.add('w-6', 'theme-accent-bg');
+        } else {
+          dot.classList.remove('w-6', 'theme-accent-bg');
+          dot.classList.add('w-2', 'bg-current', 'opacity-30');
+        }
+      });
+    }
+
+    /* --- 4. GSAP SCROLL ANIMATIONS (LEFT/RIGHT + FULL PHONE PIN + WALKING CAREER JOURNEY) --- */
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+    // 01 / Philosophy Left Column enters from LEFT
+    gsap.from('#aboutLeftCol', {
+      scrollTrigger: {
+        trigger: '#about',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      x: -90,
+      opacity: 0,
+      duration: 1.1,
+      ease: 'power3.out'
+    });
+
+    // 01 / Philosophy Right Narrative enters from RIGHT
+    gsap.from('#aboutRightCol', {
+      scrollTrigger: {
+        trigger: '#about',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      x: 90,
+      opacity: 0,
+      duration: 1.1,
+      ease: 'power3.out'
+    });
+
+    // Phone Pop-Up Entrance
+    gsap.from('#phonePopUpWrapper', {
+      scrollTrigger: {
+        trigger: '#phoneStage',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 60,
+      scale: 0.9,
+      opacity: 0,
+      duration: 0.9,
+      ease: 'back.out(1.4)'
+    });
+
+    // FULL-FRAME STICKY PINNED PHONE STAGE
+    const pinProgressBar = document.getElementById('pinProgressBar');
+
+    ScrollTrigger.create({
+      trigger: '#phoneStage',
+      start: 'top 80px',       // Pins directly below the 80px fixed navbar so entire phone fits cleanly!
+      end: '+=2400',
+      pin: true,
+      pinSpacing: true,
+      scrub: 0.3,
+      anticipatePin: 1,
+      onUpdate: (self) => {
+        const p = self.progress;
+        if (pinProgressBar) {
+          pinProgressBar.style.width = `${Math.round(p * 100)}%`;
+        }
+
+        if (p < 0.14) {
+          switchPhoneScreen(0);
+        } else if (p < 0.35) {
+          switchPhoneScreen(1);
+        } else if (p < 0.56) {
+          switchPhoneScreen(2);
+        } else if (p < 0.78) {
+          switchPhoneScreen(3);
+        } else {
+          switchPhoneScreen(4);
+        }
+      }
+    });
+
+    /* --- 5. THE WALKING CAREER JOURNEY (CHARACTER WALKING ALONG CURVED PATH) --- */
+    const journeyWrapper = document.getElementById('careerJourneyWrapper');
+    const journeyWalker = document.getElementById('journeyWalker');
+    const progressPath = document.getElementById('careerProgressPath');
+    const milestones = document.querySelectorAll('.journey-milestone');
+    let walkStopTimer = null;
+
+    if (journeyWrapper && journeyWalker && progressPath) {
+      const pathLength = progressPath.getTotalLength();
+      progressPath.style.strokeDasharray = pathLength;
+      progressPath.style.strokeDashoffset = pathLength;
+
+      gsap.to(journeyWalker, {
+        scrollTrigger: {
+          trigger: journeyWrapper,
+          start: 'top 60%',
+          end: 'bottom 65%',
+          scrub: 0.6,
+          onUpdate: (self) => {
+            const p = self.progress;
+            // Draw glowing progress curve behind character
+            progressPath.style.strokeDashoffset = pathLength * (1 - p);
+
+            // Activate walking limb swing animation while scrolling
+            journeyWalker.classList.add('walker-is-moving');
+            clearTimeout(walkStopTimer);
+            walkStopTimer = setTimeout(() => {
+              journeyWalker.classList.remove('walker-is-moving');
+            }, 180);
+
+            // Highlight the milestone node she is currently visiting
+            milestones.forEach((m, idx) => {
+              const threshold = idx / milestones.length;
+              if (p >= threshold - 0.08) {
+                m.classList.add('milestone-card-active');
+              } else {
+                m.classList.remove('milestone-card-active');
+              }
+            });
+          }
+        },
+        motionPath: {
+          path: '#careerGuidePath',
+          align: '#careerGuidePath',
+          alignOrigin: [0.5, 0.85],
+          autoRotate: false
+        },
+        ease: 'none'
+      });
+    }
+
+    // Subtle entrance animation for each milestone card
+    milestones.forEach((card, idx) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        },
+        y: 35,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+    });
+
+    /* --- 6. RESUME DOWNLOAD TOAST --- */
     const resumeBtn = document.getElementById('resumeDownloadTrigger');
     const toast = document.getElementById('toastNotification');
     const closeToast = document.getElementById('closeToast');
