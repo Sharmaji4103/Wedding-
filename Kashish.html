@@ -145,7 +145,7 @@
       overflow: hidden;
     }
 
-    .hero-video-box {
+    .hero-image-box {
       width: 100%;
       display: flex;
       justify-content: center;
@@ -155,7 +155,7 @@
     }
 
     @media (min-width: 1024px) {
-      .hero-video-box {
+      .hero-image-box {
         position: absolute;
         top: 0;
         right: 0;
@@ -169,16 +169,24 @@
       }
     }
 
-    #kashishVideo {
+    #kashishImage {
       height: 100%;
       width: auto;
       max-width: 100%;
       object-fit: contain;
       filter: drop-shadow(0 0 25px rgba(0,0,0,0.03));
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #kashishImage.image-revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     @media (min-width: 1024px) {
-      #kashishVideo {
+      #kashishImage {
         max-height: calc(100vh - 7.5rem);
         object-position: right bottom;
         -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,1) 25%);
@@ -187,7 +195,7 @@
     }
 
     @media (max-width: 1023px) {
-      #kashishVideo {
+      #kashishImage {
         max-height: 100%;
         object-position: center bottom;
       }
@@ -502,7 +510,7 @@
           </button>
         </div>
 
-        <button id="replayBtn" title="Replay Video Sequence" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] sm:text-[11px] font-sans font-semibold uppercase tracking-widest theme-text-primary border theme-border rounded-full theme-bg-card hover:opacity-85 transition-all">
+        <button id="replayBtn" title="Replay Intro Animation" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] sm:text-[11px] font-sans font-semibold uppercase tracking-widest theme-text-primary border theme-border rounded-full theme-bg-card hover:opacity-85 transition-all">
           <i class="fa-solid fa-arrow-rotate-right text-[10px]"></i>
           <span class="hidden sm:inline">Replay</span>
         </button>
@@ -514,29 +522,26 @@
     </div>
   </header>
 
-  <!-- ==================== 1. HERO BANNER ==================== -->
+  <!-- ==================== 1. HERO BANNER (IMAGE.PNG) ==================== -->
   <section id="hero" class="hero-container flex flex-col lg:flex-row lg:items-center pt-24 lg:pt-0">
     
-    <!-- Video Box -->
-    <div class="hero-video-box h-[46vh] sm:h-[50vh] lg:h-full shrink-0">
-      <video
-        id="kashishVideo"
-        class="pointer-events-none"
-        src="https://raw.githubusercontent.com/Sharmaji4103/Wedding-/main/KASHISH-vid.mp4"
-        autoplay
-        muted
-        playsinline
-        preload="auto">
-      </video>
+    <!-- Portrait Image Box -->
+    <div class="hero-image-box h-[46vh] sm:h-[50vh] lg:h-full shrink-0">
+      <img
+        id="kashishImage"
+        src="image.png"
+        alt="Kashish Rathore — Digital Marketing Executive"
+        class="pointer-events-none select-none"
+      />
     </div>
 
     <!-- Desktop Left Feather -->
     <div class="hero-left-feather"></div>
 
     <!-- Live Status Pill -->
-    <div id="videoStatusPill" class="absolute top-24 left-6 md:left-12 z-20 flex items-center gap-2 px-3.5 py-1.5 bg-white rounded-full text-[11px] font-mono uppercase tracking-widest text-[#111111] border border-[#111111]/20 shadow-sm transition-all duration-300">
+    <div id="heroStatusPill" class="absolute top-24 left-6 md:left-12 z-20 flex items-center gap-2 px-3.5 py-1.5 bg-white rounded-full text-[11px] font-mono uppercase tracking-widest text-[#111111] border border-[#111111]/20 shadow-sm transition-all duration-300">
       <span id="statusIndicatorDot" class="w-2 h-2 rounded-full theme-accent-bg animate-ping"></span>
-      <span id="statusLabel" class="font-semibold">Walking Into Frame...</span>
+      <span id="statusLabel" class="font-semibold">Executive Profile Active</span>
     </div>
 
     <!-- MAIN EDITORIAL CONTENT -->
@@ -1694,8 +1699,8 @@
     const savedTheme = localStorage.getItem('kr_portfolio_theme') || 'ivory';
     setTheme(savedTheme);
 
-    /* --- 2. HERO VIDEO & TYPEWRITER SEQUENCE --- */
-    const video = document.getElementById('kashishVideo');
+    /* --- 2. HERO PORTRAIT IMAGE & TYPEWRITER SEQUENCE --- */
+    const heroImage = document.getElementById('kashishImage');
     const replayBtn = document.getElementById('replayBtn');
     const statusLabel = document.getElementById('statusLabel');
     const statusDot = document.getElementById('statusIndicatorDot');
@@ -1733,6 +1738,10 @@
       cursorPillars.classList.add('hidden');
       designationBar.style.opacity = '0';
 
+      if (heroImage) {
+        heroImage.classList.remove('image-revealed');
+      }
+
       tagBadge.classList.remove('fade-item-visible');
       tagBadge.classList.add('fade-item-hidden');
       metaGrid.classList.remove('fade-item-visible');
@@ -1742,13 +1751,17 @@
       scrollPrompt.classList.remove('fade-item-visible');
       scrollPrompt.classList.add('fade-item-hidden');
 
-      if (statusLabel) statusLabel.textContent = "Walking & Presenting...";
+      if (statusLabel) statusLabel.textContent = "Introducing Profile...";
       if (statusDot) statusDot.classList.add('animate-ping');
     }
 
     function startImmediateTypewriter() {
       if (isTypingActive) return;
       isTypingActive = true;
+
+      if (heroImage) {
+        heroImage.classList.add('image-revealed');
+      }
 
       tagBadge.classList.remove('fade-item-hidden');
       tagBadge.classList.add('fade-item-visible');
@@ -1819,19 +1832,9 @@
 
     function launchSequence() {
       resetHeroUI();
-      if (video) {
-        video.playbackRate = 1.45;
-        video.currentTime = 0;
-        video.play().then(() => {
-          video.playbackRate = 1.45;
-          startImmediateTypewriter();
-        }).catch(() => {
-          startImmediateTypewriter();
-        });
-        video.onended = () => video.pause();
-      } else {
-        startImmediateTypewriter();
-      }
+      requestAnimationFrame(() => {
+        setTimeout(startImmediateTypewriter, 120);
+      });
     }
 
     if (replayBtn) replayBtn.addEventListener('click', launchSequence);
@@ -2009,7 +2012,7 @@
     }
 
     // Subtle entrance animation for each milestone card
-    milestones.forEach((card, idx) => {
+    milestones.forEach((card) => {
       gsap.from(card, {
         scrollTrigger: {
           trigger: card,
